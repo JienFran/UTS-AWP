@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen flex items-center justify-center bg-gray-100">
+  <div class="bg-white rounded-2xl shadow-lg flex w-3/4 max-w-4xl">
+    <div class="w-1/2 p-10 flex flex-col justify-center text-white bg-blue-600 rounded-l-2xl">
+      <h1 class="text-4xl font-bold mb-4">Welcome to Donasi Digital</h1>
+      <p class="text-lg">Mari berdonasi dengan mudah, cepat, dan transparan melalui platform ini.</p>
+    </div>
+    <div class="w-1/2 p-10 flex flex-col justify-center">
+      <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+      <form action="/login" method="POST" class="flex flex-col space-y-4">
+        <input type="text" name="username" placeholder="Username" 
+               class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input type="password" name="password" placeholder="Password" 
+               class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+        
+        <div class="flex justify-between items-center text-sm text-gray-500">
+          <label><input type="checkbox"> Remember me</label>
+          <a href="/register" class="text-blue-600 hover:underline">Register</a>
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700">Login</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
