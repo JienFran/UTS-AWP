@@ -37,9 +37,6 @@ CREATE TABLE `account` (
 -- Dumping data for table `account`
 --
 
-INSERT INTO `account` (`ID`, `Username`, `Password`) VALUES
-(2, 'bryan_valleryan', '123'),
-(3, 'Francent', 'jomok');
 
 -- --------------------------------------------------------
 
