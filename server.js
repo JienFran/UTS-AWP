@@ -4,7 +4,8 @@ const querystring = require('querystring');
 const conn = require('./koneksi.js');
 
 const server = http.createServer((req, res) => {
-  //LOGIN PAGE 
+
+  //LOGIN USER 
   if (req.method === 'GET' && req.url === '/') {
     fs.readFile('index.html', 'utf-8', (err, data) => {
       if (err) {
@@ -40,10 +41,7 @@ const server = http.createServer((req, res) => {
 
         if (results.length > 0) {
           fs.readFile('main.html', 'utf-8', (err, content) => {
-            if (err) {
-              res.writeHead(500, { 'Content-Type': 'text/plain' });
-              return res.end('Internal Server Error');
-            }
+            if (err) return res.end('Internal Server Error');
             const html = content.replace('<!--USERNAME-->', results[0].Username);
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(html);
@@ -56,7 +54,7 @@ const server = http.createServer((req, res) => {
     });
   }
 
-  //REGISTER PAGE
+  //REGISTER USER
   else if (req.method === 'GET' && req.url === '/register') {
     fs.readFile('register.html', 'utf-8', (err, data) => {
       if (err) {
@@ -67,10 +65,10 @@ const server = http.createServer((req, res) => {
       res.end(data);
     });
   }
+
   else if (req.method === 'POST' && req.url === '/register') {
     let body = '';
     req.on('data', chunk => body += chunk.toString());
-
     req.on('end', () => {
       const form = querystring.parse(body);
       const username = form.username;
@@ -88,8 +86,51 @@ const server = http.createServer((req, res) => {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           return res.end('Database Insert Error');
         }
-        res.writeHead(302, { 'Location': '/' }); // ini buat balik ke login
+        res.writeHead(302, { 'Location': '/' });
         res.end();
+      });
+    });
+  }
+
+  //LOGIN ADMIN 
+  else if (req.method === 'GET' && req.url === '/admin') {
+    fs.readFile('admin_login.html', 'utf-8', (err, data) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        return res.end('Internal Server Error');
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+  }
+
+  else if (req.method === 'POST' && req.url === '/admin_login') {
+    let body = '';
+    req.on('data', chunk => body += chunk.toString());
+    req.on('end', () => {
+      const form = querystring.parse(body);
+      const username = form.username;
+      const password = form.password;
+
+      const q = "SELECT * FROM admin WHERE Username_Admin = ? AND Password_Admin = ?";
+      conn.query(q, [username, password], (err, results) => {
+        if (err) {
+          console.error('Database error:', err);
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+          return res.end('Database Query Error');
+        }
+
+        if (results.length > 0) {
+          fs.readFile('admin_main.html', 'utf-8', (err, content) => {
+            if (err) return res.end('Internal Server Error');
+            const html = content.replace('<!--USERNAME-->', `${results[0].Username_Admin} (Admin)`);
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+          });
+        } else {
+          res.writeHead(200, { 'Content-Type': 'text/html' });
+          res.end('<h3 style="color:red; text-align:center;">Login Admin gagal! Username atau password salah.</h3><a href="/admin">Coba Lagi</a>');
+        }
       });
     });
   }
