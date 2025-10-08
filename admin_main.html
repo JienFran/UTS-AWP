@@ -3,19 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Main Menu - Admin</title>
+  <title>Dashboard Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out;
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
-  <header class="flex justify-between items-center p-4 bg-blue-600 text-white">
-    <h1 class="text-lg font-semibold"><!--USERNAME--></h1>
-    <nav>
-      <a href="#" class="mr-6">Kelola Donasi</a>
-      <a href="/" class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100">Sign Out</a>
+<body class="bg-gray-100 font-sans">
+
+  <header class="flex justify-between items-center p-4 bg-blue-600 text-white shadow-md">
+    <h1 class="text-xl font-semibold">Halo, Admin👋</h1>
+    <nav class="flex items-center">
+      <a href="/" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg shadow">Sign Out</a>
     </nav>
   </header>
-  <main class="flex justify-center items-center h-[80vh]">
-    <h2 class="text-2xl font-semibold text-gray-700">Selamat datang di halaman Admin!</h2>
-  </main>
+
+  <main class="max-w-6xl mx-auto mt-10 fade-in">
+    <h2 class="text-3xl font-bold text-gray-700 text-center mb-8">
+    Selamat datang di Dashboard Admin 
+    </h2>
+
+  <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+    <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <h3 class="text-lg font-semibold text-gray-600">Total Donasi</h3>
+      <p id="totalDonasi" class="text-3xl font-bold text-blue-600 mt-2">Loading...</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <h3 class="text-lg font-semibold text-gray-600">Jumlah Donatur</h3>
+      <p id="totalDonatur" class="text-3xl font-bold text-green-600 mt-2">Loading...</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <h3 class="text-lg font-semibold text-gray-600">Total Kampanye</h3>
+      <p id="totalKampanye" class="text-3xl font-bold text-orange-500 mt-2">Loading...</p>
+    </div>
+  </div>
+
+  <div class="mt-12 text-center">
+    <p class="text-gray-600 mb-4">Ingin melihat atau mengedit data donasi?</p>
+    <a href="/kelola.html" class="bg-blue-600 text-white px-6 py-3 rounded-xl shadow hover:bg-blue-700 transition text-lg">
+      Kelola Data Donasi
+    </a>
+  </div>
+</main>
+
+  <footer class="text-center py-4 mt-16 text-gray-500 text-sm">
+    &copy; 2025 Sistem Donasi Digital | Admin Panel
+  </footer>
+
+<script>
+  async function loadStats() {
+    try {
+      const res = await fetch('/api/stats');
+      const data = await res.json();
+
+      document.getElementById('totalDonasi').innerText =
+        `Rp ${Number(data.total_donasi).toLocaleString('id-ID')}`;
+      document.getElementById('totalDonatur').innerText = data.total_donatur;
+      document.getElementById('totalKampanye').innerText = data.total_kampanye;
+    } catch (err) {
+      console.error('Gagal memuat statistik:', err);
+    }
+  }
+
+  loadStats();
+</script>
 </body>
 </html>
