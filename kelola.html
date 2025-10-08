@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kelola Donasi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+   <header class="flex justify-between items-center p-4 bg-blue-600 text-white">
+    <h1 class="text-2xl font-bold mb-4">Kelola Donasi</h1>
+    <nav>
+     <a href="/admin_main.html" class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100">Kembali ke menu</a>
+    </nav>
+  </header>
+  
+  <form id="donasiForm" class="mb-4 space-y-2 bg-white p-4 rounded shadow-md">
+    <input id="nama" type="text" placeholder="Nama Donatur" class="border p-2 w-full" required />
+    <input id="nominal" type="number" placeholder="Nominal (Rp)" class="border p-2 w-full" required />
+    <input id="pesan" type="text" placeholder="Pesan (opsional)" class="border p-2 w-full" />
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Tambah Donasi</button>
+  </form>
+
+  <table class="table-auto w-full bg-white shadow-md">
+    <thead class="bg-blue-600 text-white">
+      <tr>
+        <th class="p-2">ID</th>
+        <th class="p-2">Nama</th>
+        <th class="p-2">Nominal</th>
+        <th class="p-2">Pesan</th>
+        <th class="p-2">Tanggal</th>
+        <th class="p-2">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="donasiTable"></tbody>
+  </table>
+
+  <script src="kelola.js"></script>
+</body>
+</html>
