@@ -1,99 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Main Menu - User</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Donasi - User</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50">
-  <header class="flex justify-between items-center p-4 bg-blue-600 text-white">
-    <h1 class="text-lg font-semibold">Halo, <!--USERNAME--></h1>
-    <nav>
-      <a href="/" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg shadow">Sign Out</a>
-    </nav>
-  </header>
-  <main class="p-8">
-  <h2 class="text-3xl font-bold text-blue-700 text-center mb-8">Selamat datang di Donasi Digital 💙</h2>
-  <section class="container mx-auto flex flex-col md:flex-row items-center mt-10 p-6">
-    <div class="md:w-1/2 space-y-4">
-      <h2 class="text-3xl font-bold text-blue-700">Tentang Donasi Digital</h2>
-      <p class="text-gray-700 text-lg leading-relaxed">
-        Donasi Digital adalah platform donasi online yang bertujuan membantu masyarakat Indonesia
-        untuk saling berbagi dan menebar kebaikan. Dengan semangat gotong royong,
-        kami menyediakan wadah yang aman, transparan, dan mudah digunakan.
-      </p>
-      <p class="text-gray-700 text-lg leading-relaxed">
-        Setiap rupiah yang kamu donasikan akan membantu mereka yang membutuhkan —
-        mulai dari pendidikan, kesehatan, hingga bantuan bencana alam.
-        Yuk, berbuat baik mulai dari sekarang! 💙
-      </p>
-    </div>
+<body class="bg-gray-50 min-h-screen">
 
-    <div class="md:w-1/2 flex justify-center mt-8 md:mt-0">
-      <img src="https://cdn-icons-png.flaticon.com/512/2769/2769003.png"
-           alt="Ilustrasi Donasi"
-           class="w-80 md:w-96 rounded-2xl shadow-lg" />
+  <header class="flex justify-between items-center bg-blue-600 text-white px-6 py-4 shadow-md">
+    <h1 class="text-xl font-semibold">Dashboard Donasi</h1>
+    <div class="flex items-center gap-4">
+      <span>Halo, <b><!--USERNAME--></b></span>
+      <a href="/logout" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded">Logout</a>
+    </div>
+  </header>
+
+  <section class="relative bg-blue-100">
+    <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1400&q=80" 
+         alt="Gambar Donasi" 
+         class="w-full h-80 object-cover opacity-80">
+    <div class="absolute inset-0 flex flex-col justify-center items-center text-white bg-black/40">
+      <h2 class="text-4xl font-bold mb-3">Bersama Kita Bisa Berbagi</h2>
+      <p class="text-lg max-w-2xl text-center">Donasi bukan hanya tentang uang, tapi tentang cinta, harapan, dan kebaikan yang menular.</p>
     </div>
   </section>
 
-   <section class="bg-white p-6 rounded-xl shadow-md w-full max-w-lg mx-auto border border-blue-100   hover:shadow-lg transition">
-      <h3 class="text-xl font-semibold mb-4 text-gray-700 text-center">Form Donasi</h3>
-      <form id="formDonasi">
-        <label class="block mb-2 text-gray-700">Nama Donatur</label>
-        <input type="text" id="nama_donatur" class="w-full border rounded-lg p-2 mb-4" placeholder="Masukkan nama Anda">
+  <main class="flex-grow p-6 max-w-5xl mx-auto space-y-10">
 
-        <label class="block mb-2 text-gray-700">Nominal Donasi (Rp)</label>
-        <input type="number" id="nominal" class="w-full border rounded-lg p-2 mb-4" placeholder="Contoh: 50000">
+    <section class="bg-white shadow-md rounded-xl p-6 flex flex-col md:flex-row gap-6 items-center">
+      <img src="/donation.png" 
+           alt="Ilustrasi Donasi" 
+          class="w-16 mx-auto mb-4">
+      <div class="md:w-1/2">
+        <h2 class="text-2xl font-semibold mb-3 text-blue-700">Apa Itu Donasi?</h2>
+        <p class="text-gray-700 leading-relaxed">
+          Donasi adalah bentuk kepedulian sosial yang diwujudkan melalui pemberian dana, barang, atau tenaga untuk membantu sesama.
+          Melalui platform <b>Donasi Kita</b>, setiap pengguna dapat berdonasi secara mudah, cepat, dan transparan — kapan pun, di mana pun.
+        </p>
+      </div>
+    </section>
 
-        <label class="block mb-2 text-gray-700">Pesan (opsional)</label>
-        <textarea id="pesan" class="w-full border rounded-lg p-2 mb-4" rows="3" placeholder="Pesan Anda..."></textarea>
+    <section class="bg-white shadow-md rounded-xl p-6">
+      <h2 class="text-2xl font-semibold mb-3 text-blue-700">Tujuan Kami</h2>
+      <div class="grid md:grid-cols-3 gap-6 text-gray-700">
+        <div class="p-4 border rounded-lg hover:shadow transition">
+          <img src="https://cdn-icons-png.flaticon.com/512/4206/4206270.png" alt="Ikon berbagi" class="w-12 mb-3">
+          <h3 class="font-semibold mb-2">Mendorong Kepedulian</h3>
+          <p>Kami ingin membangun rasa empati dan semangat berbagi di masyarakat melalui kegiatan donasi digital.</p>
+        </div>
+        <div class="p-4 border rounded-lg hover:shadow transition">
+          <img src="https://cdn-icons-png.flaticon.com/512/4319/4319057.png" alt="Ikon transparansi" class="w-12 mb-3">
+          <h3 class="font-semibold mb-2">Transparansi Donasi</h3>
+          <p>Setiap pengguna dapat memantau donasinya sendiri, sehingga dana tersalurkan dengan aman dan terpercaya.</p>
+        </div>
+        <div class="p-4 border rounded-lg hover:shadow transition">
+          <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" alt="Ikon bantuan" class="w-12 mb-3">
+          <h3 class="font-semibold mb-2">Tepat Sasaran</h3>
+          <p>Bantuan disalurkan secara langsung kepada mereka yang benar-benar membutuhkan sesuai kategori donasi.</p>
+        </div>
+      </div>
+    </section>
 
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-          Kirim Donasi
+    <section class="bg-white shadow-md rounded-xl p-6 flex flex-col md:flex-row items-center gap-6">
+      <div class="md:w-1/2">
+        <h2 class="text-2xl font-semibold mb-3 text-blue-700">Cara Kerja Platform</h2>
+        <ol class="list-decimal ml-6 text-gray-700 space-y-2">
+          <li>Daftar atau login menggunakan akun Anda.</li>
+          <li>Masuk ke dashboard dan isi form donasi.</li>
+          <li>Donasi akan tersimpan di database Anda secara pribadi.</li>
+          <li>Admin memantau total donasi secara keseluruhan.</li>
+        </ol>
+      </div>
+      <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=600&q=80" 
+           alt="Langkah Donasi" 
+           class="w-full md:w-1/2 rounded-lg object-cover">
+    </section>
+
+    <section class="bg-white shadow-md rounded-xl p-6 text-center">
+      <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Ikon hati" class="w-16 mx-auto mb-4">
+      <h2 class="text-2xl font-semibold mb-3 text-blue-700">Kenapa Donasi Itu Penting?</h2>
+      <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto">
+        Donasi membantu menciptakan perubahan nyata di sekitar kita. Dengan berbagi, kita menebarkan harapan,
+        menghapus air mata, dan membawa senyum baru bagi mereka yang membutuhkan. Kebaikan kecil dari Anda bisa jadi harapan besar bagi orang lain.
+      </p>
+    </section>
+
+  </main>
+
+  <main class="p-6 max-w-4xl mx-auto">
+
+    <section class="bg-white shadow-md rounded-lg p-6 mb-6">
+      <h2 class="text-lg font-semibold mb-4 text-gray-700">Tambah Donasi</h2>
+      <form id="formDonasi" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nama Donatur</label>
+          <input type="text" id="nama_donatur" class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200" placeholder="Nama Anda" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nominal Donasi (Rp)</label>
+          <input type="number" id="nominal" class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200" placeholder="Contoh: 50000" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Pesan</label>
+          <textarea id="pesan" class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200" rows="2" placeholder="Pesan singkat..."></textarea>
+        </div>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+          Simpan Donasi
         </button>
       </form>
     </section>
 
-    <div id="toast" class="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hidden">
-      Donasi berhasil dikirim! 🎉
-    </div>
-
-    <section class="mt-12 max-w-4xl mx-auto">
-      <h3 class="text-xl font-semibold mb-3 text-gray-700 text-center">Daftar Donasi</h3>
-      <table class="w-full bg-white border rounded-lg shadow-md overflow-hidden">
-        <thead class="bg-blue-200 text-gray-800">
-          <tr>
-            <th class="p-2 border">Nama</th>
-            <th class="p-2 border">Nominal</th>
-            <th class="p-2 border">Pesan</th>
-            <th class="p-2 border">Tanggal</th>
+    <section class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-4 text-gray-700">Riwayat Donasi Anda</h2>
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-blue-100">
+            <th class="border px-3 py-2 text-left">Nama</th>
+            <th class="border px-3 py-2 text-left">Nominal</th>
+            <th class="border px-3 py-2 text-left">Pesan</th>
+            <th class="border px-3 py-2 text-left">Tanggal</th>
           </tr>
         </thead>
-        <tbody id="tabelDonasi" class="text-gray-700"></tbody>
+        <tbody id="donasiTable"></tbody>
       </table>
     </section>
 
   </main>
 
-  <section class="text-center mb-10">
-      <h2 class="text-2xl font-bold text-gray-700 mb-3">Terima Kasih Telah Berdonasi ❤️</h2>
-      <p class="text-gray-600 mb-2">Total donasi terkumpul saat ini:</p>
-      <p id="totalDonasi" class="text-3xl font-bold text-blue-600">Rp 0</p>
-  </section>
+  <footer class="bg-blue-600 text-white text-center py-4 mt-auto">
+    <p>© 2025 Donasi Kita — Bersama Kita Bisa</p>
+  </footer>
 
-    <footer class="bg-blue-600 text-white text-center py-4 mt-12">
-      <p>&copy; 2025 Donasi Digital | Semua hak dilindungi</p>
-    </footer>
   <script>
     const form = document.getElementById('formDonasi');
-    const tabel = document.getElementById('tabelDonasi');
-    const toast = document.getElementById('toast');
-    const totalDonasi = document.getElementById('totalDonasi');
+    const tableBody = document.getElementById('donasiTable');
+    const apiUrl = '/api/donasi';
+
+    async function loadDonasi() {
+      const res = await fetch(apiUrl);
+      if (!res.ok) return alert('Gagal memuat data donasi.');
+      const data = await res.json();
+      renderTable(data);
+    }
+
+    function renderTable(data) {
+      tableBody.innerHTML = '';
+      if (data.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-3 text-gray-500">Belum ada donasi.</td></tr>`;
+        return;
+      }
+      data.forEach(d => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="border px-3 py-2">${d.nama_donatur}</td>
+          <td class="border px-3 py-2">Rp ${d.nominal.toLocaleString()}</td>
+          <td class="border px-3 py-2">${d.pesan || '-'}</td>
+          <td class="border px-3 py-2">${new Date(d.tanggal).toLocaleString()}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const nama_donatur = document.getElementById('nama_donatur').value.trim();
       const nominal = document.getElementById('nominal').value.trim();
       const pesan = document.getElementById('pesan').value.trim();
@@ -103,37 +173,19 @@
         return;
       }
 
-      await fetch('http://localhost:3001/api/donasi', {
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nama_donatur, nominal, pesan })
       });
-
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 2500);
-
+      const result = await res.json();
+      alert(result.message);
       form.reset();
       loadDonasi();
     });
 
-    async function loadDonasi() {
-      const res = await fetch('http://localhost:3001/api/donasi');
-      const data = await res.json();
-
-      tabel.innerHTML = data.map(d => `
-        <tr class="hover:bg-blue-50 transition">
-          <td class="border p-2">${d.nama_donatur}</td>
-          <td class="border p-2">Rp ${d.nominal.toLocaleString('id-ID')}</td>
-          <td class="border p-2">${d.pesan || '-'}</td>
-          <td class="border p-2">${new Date(d.tanggal).toLocaleString('id-ID')}</td>
-        </tr>
-      `).join('');
-
-      const total = data.reduce((sum, d) => sum + d.nominal, 0);
-      totalDonasi.textContent = `Rp ${total.toLocaleString('id-ID')}`;
-    }
-
     loadDonasi();
   </script>
+
 </body>
 </html>
