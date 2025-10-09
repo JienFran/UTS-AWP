@@ -4,6 +4,7 @@ CREATE TABLE donasi (
   nominal INT,
   pesan TEXT,
   tanggal DATETIME DEFAULT NOW()
+  user_id INT,
 );
 
 -- ini data buat admin dan user
