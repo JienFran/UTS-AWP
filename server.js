@@ -4,17 +4,25 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const session = require('express-session');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(session({
+  secret: 'secret123',
+  resave: false,
+  saveUninitialized: true
+}));
+
 app.use(express.static(__dirname));
+
 const conn = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '', 
+  password: '',
   database: 'uts'
 });
 
@@ -24,6 +32,7 @@ app.get('/', (req, res) => {
     res.send(data);
   });
 });
+
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -35,6 +44,9 @@ app.post('/login', (req, res) => {
     if (err) return res.status(500).send('Database Error');
 
     if (results.length > 0) {
+      req.session.userId = results[0].ID;
+      req.session.username = results[0].Username;
+
       fs.readFile('main.html', 'utf-8', (err, content) => {
         if (err) return res.status(500).send('Internal Server Error');
         const html = content.replace('<!--USERNAME-->', results[0].Username);
@@ -65,6 +77,58 @@ app.post('/register', (req, res) => {
   });
 });
 
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
+});
+
+app.post('/api/donasi', (req, res) => {
+  if (!req.session.userId)
+    return res.status(401).json({ message: 'Harus login terlebih dahulu!' });
+
+  const { nama_donatur, nominal, pesan } = req.body;
+  if (!nama_donatur || !nominal)
+    return res.status(400).json({ message: 'Nama dan nominal wajib diisi' });
+
+  const q = 'INSERT INTO donasi (nama_donatur, nominal, pesan, user_id) VALUES (?, ?, ?, ?)';
+  conn.query(q, [nama_donatur, nominal, pesan, req.session.userId], err => {
+    if (err) throw err;
+    res.json({ message: 'Donasi berhasil ditambahkan' });
+  });
+});
+
+app.get('/api/donasi', (req, res) => {
+  if (!req.session.userId)
+    return res.status(401).json({ message: 'Silakan login terlebih dahulu!' });
+
+  conn.query('SELECT * FROM donasi WHERE user_id = ?', [req.session.userId], (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+});
+
+app.get('/api/admin/donasi', (req, res) => {
+  const q = `
+    SELECT d.id, d.nama_donatur, d.nominal, d.pesan, d.tanggal, a.Username AS pemilik_akun
+    FROM donasi d
+    LEFT JOIN account a ON d.user_id = a.ID
+    ORDER BY d.tanggal DESC
+  `;
+  conn.query(q, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+app.delete('/api/admin/donasi/:id', (req, res) => {
+  const { id } = req.params;
+  conn.query('DELETE FROM donasi WHERE id = ?', [id], err => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Donasi berhasil dihapus oleh admin' });
+  });
+});
+
 app.get('/admin', (req, res) => {
   fs.readFile('admin_login.html', 'utf-8', (err, data) => {
     if (err) return res.status(500).send('Internal Server Error');
@@ -74,12 +138,14 @@ app.get('/admin', (req, res) => {
 
 app.post('/admin_login', (req, res) => {
   const { username, password } = req.body;
-
   const q = 'SELECT * FROM admin WHERE Username_Admin = ? AND Password_Admin = ?';
   conn.query(q, [username, password], (err, results) => {
     if (err) return res.status(500).send('Database Query Error');
 
     if (results.length > 0) {
+      req.session.isAdmin = true;
+      req.session.adminName = results[0].Username_Admin;
+
       fs.readFile('admin_main.html', 'utf-8', (err, content) => {
         if (err) return res.status(500).send('Internal Server Error');
         const html = content.replace('<!--USERNAME-->', `${results[0].Username_Admin} (Admin)`);
@@ -91,68 +157,73 @@ app.post('/admin_login', (req, res) => {
   });
 });
 
-app.post('/api/donasi', (req, res) => {
-  const { nama_donatur, nominal, pesan } = req.body;
-  if (!nama_donatur || !nominal)
-    return res.status(400).json({ message: 'Nama dan nominal wajib diisi' });
-
-  conn.query('INSERT INTO donasi (nama_donatur, nominal, pesan) VALUES (?, ?, ?)',
-    [nama_donatur, nominal, pesan],
-    err => {
-      if (err) throw err;
-      res.json({ message: 'Data berhasil ditambahkan' });
-    });
-});
-
-app.get('/api/donasi', (req, res) => {
-  conn.query('SELECT * FROM donasi', (err, results) => {
-    if (err) throw err;
+app.get('/api/admin/donasi', (req, res) => {
+  const query = `
+    SELECT d.id, d.nama_donatur, d.nominal, d.pesan, d.tanggal, a.Username AS pemilik_akun
+    FROM donasi d
+    LEFT JOIN account a ON d.user_id = a.ID
+    ORDER BY d.tanggal DESC
+  `;
+  conn.query(query, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
     res.json(results);
   });
 });
 
-app.put('/api/donasi/:id', (req, res) => {
+app.delete('/api/admin/donasi/:id', (req, res) => {
   const { id } = req.params;
-  const { nama_donatur, nominal, pesan } = req.body;
-  conn.query('UPDATE donasi SET nama_donatur=?, nominal=?, pesan=? WHERE id=?',
-    [nama_donatur, nominal, pesan, id],
-    err => {
-      if (err) throw err;
-      res.json({ message: 'Data berhasil diupdate' });
-    });
-});
-
-app.delete('/api/donasi/:id', (req, res) => {
-  const { id } = req.params;
-  conn.query('DELETE FROM donasi WHERE id=?', [id], err => {
-    if (err) throw err;
-    res.json({ message: 'Data berhasil dihapus' });
+  conn.query('DELETE FROM donasi WHERE id = ?', [id], (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Donasi berhasil dihapus oleh admin' });
   });
 });
 
+app.put('/api/admin/donasi/:id', (req, res) => {
+  const { id } = req.params;
+  const { nama_donatur, nominal, pesan } = req.body;
+
+  if (!nama_donatur || !nominal) {
+    return res.status(400).json({ message: 'Nama dan nominal wajib diisi!' });
+  }
+
+  const query = 'UPDATE donasi SET nama_donatur = ?, nominal = ?, pesan = ? WHERE id = ?';
+  conn.query(query, [nama_donatur, nominal, pesan, id], (err, result) => {
+    if (err) {
+      console.error('❌ Error update data:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Data donasi tidak ditemukan!' });
+    }
+
+    res.json({ message: '✅ Data donasi berhasil diperbarui!' });
+  });
+});
+
+
 app.get('/api/stats', (req, res) => {
-  const totalDonasiQuery = 'SELECT SUM(nominal) AS total_donasi FROM donasi';
-  const totalDonaturQuery = 'SELECT COUNT(DISTINCT nama_donatur) AS total_donatur FROM donasi';
-  const totalKampanyeQuery = 'SELECT COUNT(*) AS total_kampanye FROM donasi'; 
+  const q1 = 'SELECT IFNULL(SUM(nominal), 0) AS total_donasi FROM donasi';
+  const q2 = 'SELECT COUNT(DISTINCT nama_donatur) AS total_donatur FROM donasi';
+  const q3 = 'SELECT 0 AS total_kampanye'; 
 
-  conn.query(totalDonasiQuery, (err, donasiResult) => {
+  conn.query(q1, (err, r1) => {
     if (err) return res.status(500).json({ error: err.message });
-
-    conn.query(totalDonaturQuery, (err, donaturResult) => {
+    conn.query(q2, (err, r2) => {
       if (err) return res.status(500).json({ error: err.message });
-
-      conn.query(totalKampanyeQuery, (err, kampanyeResult) => {
+      conn.query(q3, (err, r3) => {
         if (err) return res.status(500).json({ error: err.message });
 
         res.json({
-          total_donasi: donasiResult[0].total_donasi || 0,
-          total_donatur: donaturResult[0].total_donatur || 0,
-          total_kampanye: kampanyeResult[0].total_kampanye || 0
+          total_donasi: r1[0].total_donasi || 0,
+          total_donatur: r2[0].total_donatur || 0,
+          total_kampanye: r3[0].total_kampanye || 0
         });
       });
     });
   });
 });
+
 
 app.listen(3001, () => {
   console.log('✅ Server running at http://localhost:3001');
