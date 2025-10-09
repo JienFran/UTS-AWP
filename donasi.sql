@@ -3,8 +3,8 @@ CREATE TABLE donasi (
   nama_donatur VARCHAR(100),
   nominal INT,
   pesan TEXT,
-  tanggal DATETIME DEFAULT NOW()
-  user_id INT,
+  tanggal DATETIME DEFAULT NOW(),
+  user_id INT
 );
 
 -- ini data buat admin dan user

@@ -37,7 +37,28 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password)
-    return res.send('<h3 style="color:red; text-align:center;">Username & Password wajib diisi!</h3><a href="/">Kembali</a>');
+    return res.send(`<!DOCTYPE html>
+                    <head>
+                      <title>Gagal Login!</title>
+                      <script src="https://cdn.tailwindcss.com"></script>
+                    </head>
+                    <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-red-50 to-red-200">
+                      <div class="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+                        <div class="flex justify-center mb-4">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 016.5 6.5 6.5 6.5 0 01-13 0A6.5 6.5 0 0112 5.5z" />
+                          </svg>
+                        </div>
+                        <h2 class="text-2xl font-semibold text-red-600 mb-2">Login Gagal!</h2>
+                        <p class="text-gray-700 mb-6">Username atau password tidak boleh kosong!</p>
+                        <a href="/" 
+                          class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300 ease-in-out">
+                          Coba Lagi
+                        </a>
+                      </div>
+                    </body>
+                    </html>
+                    `);
 
   const q = 'SELECT * FROM account WHERE Username = ? AND Password = ?';
   conn.query(q, [username, password], (err, results) => {
@@ -53,7 +74,29 @@ app.post('/login', (req, res) => {
         res.send(html);
       });
     } else {
-      res.send('<h3 style="color:red; text-align:center;">Login gagal! Username atau password salah.</h3><a href="/">Coba Lagi</a>');
+      res.send(`
+        <!DOCTYPE html>
+        <head>
+          <title>Gagal Login!</title>
+          <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-red-50 to-red-200">
+          <div class="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+            <div class="flex justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 016.5 6.5 6.5 6.5 0 01-13 0A6.5 6.5 0 0112 5.5z" />
+              </svg>
+            </div>
+            <h2 class="text-2xl font-semibold text-red-600 mb-2">Login Gagal!</h2>
+            <p class="text-gray-700 mb-6">Username atau password yang kamu masukkan salah!</p>
+            <a href="/" 
+              class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300 ease-in-out">
+              Coba Lagi
+            </a>
+          </div>
+        </body>
+        </html>
+        `);
     }
   });
 });
