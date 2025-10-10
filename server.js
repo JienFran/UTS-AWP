@@ -285,6 +285,21 @@ app.get('/api/user', (req, res) => {
   }
 });
 
+app.get('/api/campaigns/:id', (req, res) => {
+  const { id } = req.params; // Ambil ID dari URL
+  const query = 'SELECT * FROM campaigns WHERE id = ?';
+
+  conn.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: 'Gagal mengambil data dari database.' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Kampanye tidak ditemukan.' });
+    }
+    res.json(results[0]); // Kirim data kampanye pertama yang ditemukan
+  });
+});
+
 app.listen(3001, () => {
   console.log("✅ Server running at http://localhost:3001");
 });

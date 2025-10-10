@@ -60,7 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="text-right"><span class="font-semibold">Target</span><p>${formatRupiah(campaign.target_amount)}</p></div>
           </div>
         </div>
-        <div class="p-5 border-t mt-auto bg-white"><button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg transition">Donasi Sekarang</button></div>
+        <div class="p-5 border-t mt-auto bg-white"><a href="detail-kampanye.html?id=${campaign.id}" class="block text-center w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
+  Donasi Sekarang
+</a></div>
       </div>
     `;
   };
