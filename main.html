@@ -9,8 +9,6 @@
 
 <body class="bg-gradient-to-b from-blue-50 to-white min-h-screen scroll-smooth font-sans text-gray-800">
 
-
-  
   <section id="home" class="relative">
     <img 
       src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1600&q=80" 
@@ -44,9 +42,9 @@
       </nav>
 
       <div class="flex items-center gap-4">
-        <span class="font-medium text-white">Halo, <b><!--USERNAME--></b></span>
+        <span class="font-medium text-white">Halo, <b id="username-display">...</b></span>
         <a href="/logout"
-           class="px-5 py-2.5 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 focus:ring-4 focus:ring-red-300 transition duration-300 shadow-md">
+          class="px-5 py-2.5 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 focus:ring-4 focus:ring-red-300 transition duration-300 shadow-md">
           Logout
         </a>
       </div>
@@ -108,15 +106,21 @@
         </ol>
       </div>
       <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=600&q=80" 
-           alt="Langkah Donasi" 
-           class="w-full md:w-1/2 rounded-xl object-cover shadow-md">
+          alt="Langkah Donasi" 
+          class="w-full md:w-1/2 rounded-xl object-cover shadow-md">
     </section>
-
-    <section class="bg-white shadow-lg rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 hover:shadow-xl transition duration-300">
-      <h2 class="text-4xl font-bold mb-4">Donasi Nanti Taro Disini ya Justin Makasih</h2>
+    
+    <section id="donate" class="bg-white shadow-lg rounded-2xl p-8 hover:shadow-xl transition duration-300">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-semibold text-blue-700">Program Donasi Unggulan</h2>
+        <p class="text-gray-600 mt-2 max-w-2xl mx-auto">
+          Temukan program yang menyentuh hati Anda dan jadilah bagian dari perubahan baik hari ini.
+        </p>
+      </div>
+      <div id="campaign-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        </div>
     </section>
-
-  </main>
+    </main>
 
   <footer class="bg-blue-700 text-white text-center py-6 mt-10 shadow-inner">
     <p>© 2025 <b>Semuabisa.com</b> — Bersama Kita Bisa</p>
@@ -127,6 +131,6 @@
       scroll-behavior: smooth;
     }
   </style>
-
+  <script src="donasi.js" defer></script>
 </body>
 </html>

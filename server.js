@@ -1,40 +1,41 @@
-const express = require('express');
-const fs = require('fs');
-const mysql = require('mysql2');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const path = require('path');
-const session = require('express-session');
+const express = require("express");
+const fs = require("fs");
+const mysql = require("mysql2");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const path = require("path");
+const session = require("express-session");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(session({
-  secret: 'secret123',
-  resave: false,
-  saveUninitialized: true
-}));
+app.use(
+  session({
+    secret: "secret123",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.use(express.static(__dirname));
 
 const conn = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'uts'
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "uts",
 });
 
-app.get('/', (req, res) => {
-  fs.readFile('index.html', 'utf-8', (err, data) => {
-    if (err) return res.status(500).send('Internal Server Error');
+app.get("/", (req, res) => {
+  fs.readFile("index.html", "utf-8", (err, data) => {
+    if (err) return res.status(500).send("Internal Server Error");
     res.send(data);
   });
 });
 
-
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password)
     return res.send(`<!DOCTYPE html>
@@ -60,17 +61,18 @@ app.post('/login', (req, res) => {
                     </html>
                     `);
 
-  const q = 'SELECT * FROM account WHERE Username = ? AND Password = ?';
+  const q = "SELECT * FROM account WHERE Username = ? AND Password = ?";
+
   conn.query(q, [username, password], (err, results) => {
-    if (err) return res.status(500).send('Database Error');
+    if (err) return res.status(500).send("Database Error");
 
     if (results.length > 0) {
       req.session.userId = results[0].ID;
       req.session.username = results[0].Username;
 
-      fs.readFile('main.html', 'utf-8', (err, content) => {
-        if (err) return res.status(500).send('Internal Server Error');
-        const html = content.replace('<!--USERNAME-->', results[0].Username);
+      fs.readFile("main.html", "utf-8", (err, content) => {
+        if (err) return res.status(500).send("Internal Server Error");
+        const html = content.replace("<!--USERNAME-->", results[0].Username);
         res.send(html);
       });
     } else {
@@ -95,63 +97,86 @@ app.post('/login', (req, res) => {
             </a>
           </div>
         </body>
-        </html>
-        `);
+        </html>`);
     }
   });
 });
 
-app.get('/register', (req, res) => {
-  fs.readFile('register.html', 'utf-8', (err, data) => {
-    if (err) return res.status(500).send('Internal Server Error');
+app.get("/register", (req, res) => {
+  fs.readFile("register.html", "utf-8", (err, data) => {
+    if (err) return res.status(500).send("Internal Server Error");
     res.send(data);
   });
 });
 
-app.post('/register', (req, res) => {
+app.post("/register", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password)
-    return res.send('<h3 style="color:red; text-align:center;">Semua field wajib diisi!</h3><a href="/register">Kembali</a>');
+    return res.send(
+      '<h3 style="color:red; text-align:center;">Semua field wajib diisi!</h3><a href="/register">Kembali</a>'
+    );
 
-  const q = 'INSERT INTO account (Username, Password) VALUES (?, ?)';
-  conn.query(q, [username, password], err => {
-    if (err) return res.status(500).send('Database Insert Error');
-    res.redirect('/');
+  const q = "INSERT INTO account (Username, Password) VALUES (?, ?)";
+  conn.query(q, [username, password], (err) => {
+    if (err) return res.status(500).send("Database Insert Error");
+    res.redirect("/");
   });
 });
 
-app.get('/logout', (req, res) => {
+app.get("/logout", (req, res) => {
   req.session.destroy(() => {
-    res.redirect('/');
+    res.redirect("/");
   });
 });
 
-app.post('/api/donasi', (req, res) => {
+app.post("/api/donasi", (req, res) => {
   if (!req.session.userId)
-    return res.status(401).json({ message: 'Harus login terlebih dahulu!' });
+    return res.status(401).json({ message: "Harus login terlebih dahulu!" });
 
   const { nama_donatur, nominal, pesan } = req.body;
   if (!nama_donatur || !nominal)
-    return res.status(400).json({ message: 'Nama dan nominal wajib diisi' });
+    return res.status(400).json({ message: "Nama dan nominal wajib diisi" });
 
-  const q = 'INSERT INTO donasi (nama_donatur, nominal, pesan, user_id) VALUES (?, ?, ?, ?)';
-  conn.query(q, [nama_donatur, nominal, pesan, req.session.userId], err => {
+  const q =
+    "INSERT INTO donasi (nama_donatur, nominal, pesan, user_id) VALUES (?, ?, ?, ?)";
+  conn.query(q, [nama_donatur, nominal, pesan, req.session.userId], (err) => {
     if (err) throw err;
-    res.json({ message: 'Donasi berhasil ditambahkan' });
+    res.json({ message: "Donasi berhasil ditambahkan" });
   });
 });
 
-app.get('/api/donasi', (req, res) => {
+app.get("/api/donasi", (req, res) => {
   if (!req.session.userId)
-    return res.status(401).json({ message: 'Silakan login terlebih dahulu!' });
+    return res.status(401).json({ message: "Silakan login terlebih dahulu!" });
 
-  conn.query('SELECT * FROM donasi WHERE user_id = ?', [req.session.userId], (err, results) => {
-    if (err) throw err;
+  conn.query(
+    "SELECT * FROM donasi WHERE user_id = ?",
+    [req.session.userId],
+    (err, results) => {
+      if (err) throw err;
+      res.json(results);
+    }
+  );
+});
+
+// ==========================================================
+// === SATU-SATUNYA BAGIAN YANG DITAMBAHKAN ADA DI SINI ===
+// ==========================================================
+app.get("/api/campaigns", (req, res) => {
+  const query = "SELECT * FROM campaigns ORDER BY id DESC";
+  conn.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching campaigns:", err);
+      return res.status(500).json({ message: "Gagal ambil data kampanye." });
+    }
     res.json(results);
   });
 });
+// ==========================================================
+// === AKHIR BAGIAN YANG DITAMBAHKAN ===
+// ==========================================================
 
-app.get('/api/admin/donasi', (req, res) => {
+app.get("/api/admin/donasi", (req, res) => {
   const q = `
     SELECT d.id, d.nama_donatur, d.nominal, d.pesan, d.tanggal, a.Username AS pemilik_akun
     FROM donasi d
@@ -164,11 +189,11 @@ app.get('/api/admin/donasi', (req, res) => {
   });
 });
 
-app.delete('/api/admin/donasi/:id', (req, res) => {
+app.delete("/api/admin/donasi/:id", (req, res) => {
   const { id } = req.params;
-  conn.query('DELETE FROM donasi WHERE id = ?', [id], err => {
+  conn.query("DELETE FROM donasi WHERE id = ?", [id], (err) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'Donasi berhasil dihapus oleh admin' });
+    res.json({ message: "Donasi berhasil dihapus oleh admin" });
   });
 });
 
@@ -200,55 +225,36 @@ app.post('/admin_login', (req, res) => {
   });
 });
 
-app.get('/api/admin/donasi', (req, res) => {
-  const query = `
-    SELECT d.id, d.nama_donatur, d.nominal, d.pesan, d.tanggal, a.Username AS pemilik_akun
-    FROM donasi d
-    LEFT JOIN account a ON d.user_id = a.ID
-    ORDER BY d.tanggal DESC
-  `;
-  conn.query(query, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(results);
-  });
-});
+// Saya hapus route duplikat untuk /api/admin/donasi dan /api/admin/donasi/:id
 
-app.delete('/api/admin/donasi/:id', (req, res) => {
-  const { id } = req.params;
-  conn.query('DELETE FROM donasi WHERE id = ?', [id], (err) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'Donasi berhasil dihapus oleh admin' });
-  });
-});
-
-app.put('/api/admin/donasi/:id', (req, res) => {
+app.put("/api/admin/donasi/:id", (req, res) => {
   const { id } = req.params;
   const { nama_donatur, nominal, pesan } = req.body;
 
   if (!nama_donatur || !nominal) {
-    return res.status(400).json({ message: 'Nama dan nominal wajib diisi!' });
+    return res.status(400).json({ message: "Nama dan nominal wajib diisi!" });
   }
 
-  const query = 'UPDATE donasi SET nama_donatur = ?, nominal = ?, pesan = ? WHERE id = ?';
+  const query =
+    "UPDATE donasi SET nama_donatur = ?, nominal = ?, pesan = ? WHERE id = ?";
   conn.query(query, [nama_donatur, nominal, pesan, id], (err, result) => {
     if (err) {
-      console.error('❌ Error update data:', err);
+      console.error("❌ Error update data:", err);
       return res.status(500).json({ error: err.message });
     }
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Data donasi tidak ditemukan!' });
+      return res.status(404).json({ message: "Data donasi tidak ditemukan!" });
     }
 
-    res.json({ message: '✅ Data donasi berhasil diperbarui!' });
+    res.json({ message: "✅ Data donasi berhasil diperbarui!" });
   });
 });
 
-
-app.get('/api/stats', (req, res) => {
-  const q1 = 'SELECT IFNULL(SUM(nominal), 0) AS total_donasi FROM donasi';
-  const q2 = 'SELECT COUNT(DISTINCT nama_donatur) AS total_donatur FROM donasi';
-  const q3 = 'SELECT 0 AS total_kampanye'; 
+app.get("/api/stats", (req, res) => {
+  const q1 = "SELECT IFNULL(SUM(nominal), 0) AS total_donasi FROM donasi";
+  const q2 = "SELECT COUNT(DISTINCT nama_donatur) AS total_donatur FROM donasi";
+  const q3 = "SELECT COUNT(id) AS total_kampanye FROM campaigns"; // Ini sudah saya perbaiki juga
 
   conn.query(q1, (err, r1) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -260,14 +266,25 @@ app.get('/api/stats', (req, res) => {
         res.json({
           total_donasi: r1[0].total_donasi || 0,
           total_donatur: r2[0].total_donatur || 0,
-          total_kampanye: r3[0].total_kampanye || 0
+          total_kampanye: r3[0].total_kampanye || 0,
         });
       });
     });
   });
 });
 
+// TAMBAHKAN BLOK INI KE server.js ANDA
+app.get('/api/user', (req, res) => {
+  // Cek apakah ada informasi username di session
+  if (req.session && req.session.username) {
+    // Jika ada, kirim sebagai JSON
+    res.json({ username: req.session.username });
+  } else {
+    // Jika tidak ada, kirim status error
+    res.status(401).json({ message: 'User tidak login' });
+  }
+});
 
 app.listen(3001, () => {
-  console.log('✅ Server running at http://localhost:3001');
+  console.log("✅ Server running at http://localhost:3001");
 });
