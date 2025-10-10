@@ -6,5 +6,3 @@ CREATE TABLE donasi (
   tanggal DATETIME DEFAULT NOW(),
   user_id INT
 );
-
--- ini data buat admin dan user

@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // --- FUNGSI BARU UNTUK MEMUAT DATA USER ---
   const loadUserData = async () => {
     const usernameDisplay = document.getElementById('username-display');
     if (!usernameDisplay) return;
@@ -19,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- FUNGSI LAMA UNTUK MEMUAT KAMPANYE (TIDAK BERUBAH) ---
   const loadCampaigns = async () => {
     const campaignContainer = document.getElementById('campaign-container');
     if (!campaignContainer) return;
@@ -47,7 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const createCampaignCard = (campaign) => {
     const percentage = Math.min((campaign.current_amount / campaign.target_amount) * 100, 100).toFixed(0);
-    const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+    const formatRupiah = (number) => new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    }).format(number);
     return `
       <div class="border rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-gray-50">
         <img src="${campaign.image_url || 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80'}" alt="${campaign.title}" class="w-full h-52 object-cover">
@@ -67,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   };
 
-  // Panggil kedua fungsi saat halaman dimuat
   loadUserData();
   loadCampaigns();
 });
