@@ -5,19 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register - Semuabisa.com</title>
-  <script src="https://cdn.tailwindcss.com">
-    document.querySelector("form").addEventListener("submit", function (e) {
-    const password = document.getElementById("password").value;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const isLongEnough = password.length >= 6;
-
-    if (!hasUppercase || !hasNumber || !isLongEnough) {
-      e.preventDefault();
-      alert("Password harus minimal 6 karakter, mengandung 1 huruf kapital dan 1 angka!");
-    }
-  });
-  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
@@ -79,3 +67,4 @@
 </body>
 
 </html>
+
