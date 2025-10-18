@@ -273,11 +273,9 @@ app.post("/api/donate", (req, res) => {
             if (err) {
               console.error("Error mengupdate total kampanye:", err);
               return conn.rollback(() => {
-                res
-                  .status(500)
-                  .json({
-                    message: "Gagal mengupdate jumlah donasi kampanye.",
-                  });
+                res.status(500).json({
+                  message: "Gagal mengupdate jumlah donasi kampanye.",
+                });
               });
             }
 
@@ -291,11 +289,9 @@ app.post("/api/donate", (req, res) => {
               }
 
               console.log("Donasi berhasil diproses!");
-              res
-                .status(200)
-                .json({
-                  message: "Terima kasih, donasi Anda berhasil diterima!",
-                });
+              res.status(200).json({
+                message: "Terima kasih, donasi Anda berhasil diterima!",
+              });
             });
           }
         );
@@ -326,15 +322,12 @@ app.get("/api/stats/total-donasi", (req, res) => {
   const q = "SELECT SUM(nominal) AS totalDonasi FROM donasi";
   conn.query(q, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
-    // Jika belum ada donasi, hasilnya bisa null. Kita ubah jadi 0.
     const total = results[0].totalDonasi || 0;
     res.json({ totalDonasi: total });
   });
 });
 
-// 2. Endpoint untuk menghitung JUMLAH DONATUR UNIK
 app.get("/api/stats/jumlah-donatur", (req, res) => {
-  // COUNT(DISTINCT user_id) menghitung user yang berbeda agar tidak dobel
   const q = "SELECT COUNT(DISTINCT user_id) AS jumlahDonatur FROM donasi";
   conn.query(q, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -342,12 +335,39 @@ app.get("/api/stats/jumlah-donatur", (req, res) => {
   });
 });
 
-// 3. Endpoint untuk menghitung TOTAL KAMPANYE
 app.get("/api/stats/total-kampanye", (req, res) => {
   const q = "SELECT COUNT(*) AS totalKampanye FROM campaigns";
   conn.query(q, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ totalKampanye: results[0].totalKampanye });
+  });
+});
+
+app.post("/api/campaigns", (req, res) => {
+  const { title, description, target_amount, end_date } = req.body;
+
+  if (!title || !target_amount || !end_date) {
+    return res
+      .status(400)
+      .json({ message: "Judul, target, dan tanggal akhir wajib diisi." });
+  }
+
+  const query =
+    "INSERT INTO campaigns (title, description, target_amount, end_date, status, current_amount) VALUES (?, ?, ?, ?, 'active', 0)";
+  const params = [title, description, target_amount, end_date];
+
+  conn.query(query, params, (err, results) => {
+    if (err) {
+      console.error("Error creating new campaign:", err);
+      return res
+        .status(500)
+        .json({ message: "Gagal menyimpan kampanye ke database." });
+    }
+
+    res.status(201).json({
+      message: "Kampanye baru berhasil ditambahkan!",
+      newCampaignId: results.insertId,
+    });
   });
 });
 
