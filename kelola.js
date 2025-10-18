@@ -1,3 +1,34 @@
+document.addEventListener('DOMContentLoaded', () => {
+    loadStats();
+});
+
+async function loadStats() {
+  try {
+    const [totalDonasiRes, jumlahDonaturRes, totalKampanyeRes] = await Promise.all([
+      fetch('/api/stats/total-donasi'),
+      fetch('/api/stats/jumlah-donatur'),
+      fetch('/api/stats/total-kampanye')
+    ]);
+
+    if (!totalDonasiRes.ok || !jumlahDonaturRes.ok || !totalKampanyeRes.ok) {
+      throw new Error('Gagal mengambil salah satu data statistik.');
+    }
+
+    const totalDonasiData = await totalDonasiRes.json();
+    const jumlahDonaturData = await jumlahDonaturRes.json();
+    const totalKampanyeData = await totalKampanyeRes.json();
+
+    document.getElementById('totalDonasi').innerText = `Rp ${Number(totalDonasiData.totalDonasi).toLocaleString('id-ID')}`;
+    document.getElementById('totalDonatur').innerText = jumlahDonaturData.jumlahDonatur;
+    document.getElementById('totalKampanye').innerText = totalKampayeData.totalKampanye;
+
+  } catch (err) {
+    console.error('Gagal memuat statistik:', err);
+    document.getElementById('totalDonasi').innerText = 'Error';
+    document.getElementById('totalDonatur').innerText = 'Error';
+    document.getElementById('totalKampanye').innerText = 'Error';
+  }
+}
 async function loadDonasi() {
   try {
     const res = await fetch('/api/admin/donasi');
@@ -67,4 +98,5 @@ function editDonasi(id, nama, nominal, pesan) {
     .catch((err) => console.error('Gagal update data:', err));
 }
 
+loadStats();
 loadDonasi();
