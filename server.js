@@ -31,10 +31,11 @@ app.use(
 app.use(express.static(__dirname));
 
 const conn = mysql.createConnection({
-  host: "localhost",
+  host: "trolley.proxy.rlwy.net",
+  port: "34469",
   user: "root",
-  password: "",
-  database: "uts",
+  password: "AvSBodNsdedddbCqMVFCgQarhfkijnAo",
+  database: "railway"
 });
 
 app.get("/", (req, res) => {
