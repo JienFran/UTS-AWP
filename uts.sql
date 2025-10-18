@@ -65,6 +65,19 @@ CREATE TABLE campaigns (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE `donasi` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `campaign_id` INT(11) NOT NULL,
+  `nama_donatur` VARCHAR(255) NOT NULL,
+  `nominal` DECIMAL(15, 2) NOT NULL,
+  `pesan` TEXT DEFAULT NULL,
+  `tanggal` TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `account`(`ID`) ON DELETE CASCADE,
+  FOREIGN KEY (`campaign_id`) REFERENCES `campaigns`(`id`) ON DELETE CASCADE
+);
+
 INSERT INTO `admin` (`ID`, `Username_Admin`, `Password_Admin`) VALUES
 (1, 'admin', 'admin');
 
