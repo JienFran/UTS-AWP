@@ -247,6 +247,12 @@
           class="w-full mb-3 px-4 py-2 border rounded-lg"
         />
         <input
+          id="editImageUrl"
+          type="url"
+          placeholder="Link Gambar Kampanye (URL)"
+          class="w-full mb-3 px-4 py-2 border rounded-lg"
+        />
+        <input
           id="editStatus"
           type="text"
           placeholder="Status (active/completed/cancelled)"
@@ -295,6 +301,12 @@
           placeholder="Deskripsi Kampanye"
           class="w-full mb-3 px-4 py-2 border rounded-lg"
         ></textarea>
+        <input
+          id="createImageUrl"
+          type="url"
+          placeholder="Link Gambar Kampanye (URL)"
+          class="w-full mb-3 px-4 py-2 border rounded-lg"
+        />
         <input
           id="createTarget"
           type="number"
@@ -441,7 +453,7 @@
             c.target_amount
           }, '${c.status}', '${
             c.end_date.split("T")[0]
-          }')" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
+          }', '${c.image_url || ''}')" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
               <button onclick="openConfirm('Yakin ingin menghapus kampanye ini?', () => deleteCampaign(${
                 c.id
               }))" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Hapus</button>
@@ -454,10 +466,11 @@
         .getElementById("btnCampaignSearch")
         .addEventListener("click", loadCampaigns);
 
-      function openEditModal(id, title, target, status, endDate) {
+      function openEditModal(id, title, target, status, endDate, imageUrl) {
         selectedCampaignId = id;
         document.getElementById("editTitle").value = title;
         document.getElementById("editTarget").value = target;
+        document.getElementById("editImageUrl").value = imageUrl;
         document.getElementById("editStatus").value = status;
         document.getElementById("editEndDate").value = endDate;
         document.getElementById("editModal").classList.remove("hidden");
@@ -474,6 +487,7 @@
           const updated = {
             title: document.getElementById("editTitle").value.trim(),
             target_amount: document.getElementById("editTarget").value,
+            image_url: document.getElementById("editImageUrl").value.trim(),
             status: document.getElementById("editStatus").value.trim(),
             end_date: document.getElementById("editEndDate").value,
           };
@@ -514,6 +528,7 @@
             description: document
               .getElementById("createDescription")
               .value.trim(),
+            image_url: document.getElementById("createImageUrl").value.trim(),
             target_amount: document.getElementById("createTarget").value,
             end_date: document.getElementById("createEndDate").value,
           };

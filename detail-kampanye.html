@@ -73,6 +73,22 @@
   </main>
 
   <script src="detail.js" defer></script>
+
+  <div id="success-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
+    <div class="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-xl">
+      <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+        <svg class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h2 class="mb-2 text-2xl font-bold text-gray-800">Donasi Berhasil!</h2>
+      <p id="modal-message" class="mb-6 text-gray-600">Terima kasih atas kebaikan Anda.</p>
+      <button id="modal-close-btn" class="w-full rounded-lg bg-green-600 px-6 py-3 font-semibold text-white hover:bg-green-700">
+        Oke
+      </button>
+    </div>
+  </div>
+
 </body>
 
 </html>

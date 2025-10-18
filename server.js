@@ -219,6 +219,116 @@ app.get("/api/campaigns/:id", (req, res) => {
   });
 });
 
+app.put("/api/campaigns/:id", (req, res) => {
+  const { id } = req.params;
+
+  const { title, target_amount, status, end_date, image_url } = req.body;
+  if (!title || !target_amount || !status || !end_date) {
+    return res.status(400).json({ message: "Semua field wajib diisi." });
+  }
+
+  const query =
+    "UPDATE campaigns SET title = ?, target_amount = ?, status = ?, end_date = ?, image_url = ? WHERE id = ?";
+
+  const params = [title, target_amount, status, end_date, image_url, id];
+
+  conn.query(query, params, (err, results) => {
+    if (err) {
+      console.error("Error updating campaign:", err);
+      return res.status(500).json({ message: "Gagal mengupdate kampanye." });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Kampanye tidak ditemukan." });
+    }
+    res.json({ message: "Kampanye berhasil diupdate!" });
+  });
+});
+
+app.delete("/api/campaigns/:id", (req, res) => {
+  const { id } = req.params;
+  const query = "DELETE FROM campaigns WHERE id = ?";
+
+  conn.query(query, [id], (err, results) => {
+    if (err) {
+      console.error("Error deleting campaign:", err);
+      return res.status(500).json({ message: "Gagal menghapus kampanye." });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Kampanye tidak ditemukan." });
+    }
+    res.json({ message: "Kampanye berhasil dihapus!" });
+  });
+});
+
+app.delete("/api/admin/donasi/:id", (req, res) => {
+  const { id } = req.params;
+  let donationAmount = 0;
+  let campaignId = 0;
+
+  conn.beginTransaction((err) => {
+    if (err) {
+      console.error("Error memulai transaksi:", err);
+      return res.status(500).json({ message: "Kesalahan server." });
+    }
+
+    const getDonationQuery =
+      "SELECT nominal, campaign_id FROM donasi WHERE id = ?";
+    conn.query(getDonationQuery, [id], (err, results) => {
+      if (err || results.length === 0) {
+        return conn.rollback(() => {
+          res.status(404).json({ message: "Data donasi tidak ditemukan." });
+        });
+      }
+
+      donationAmount = results[0].nominal;
+      campaignId = results[0].campaign_id;
+
+      const updateCampaignQuery =
+        "UPDATE campaigns SET current_amount = current_amount - ? WHERE id = ?";
+      conn.query(
+        updateCampaignQuery,
+        [donationAmount, campaignId],
+        (err, results) => {
+          if (err) {
+            return conn.rollback(() => {
+              console.error("Error mengupdate kampanye:", err);
+              res
+                .status(500)
+                .json({ message: "Gagal mengupdate total donasi kampanye." });
+            });
+          }
+
+          const deleteDonationQuery = "DELETE FROM donasi WHERE id = ?";
+          conn.query(deleteDonationQuery, [id], (err, results) => {
+            if (err) {
+              return conn.rollback(() => {
+                console.error("Error menghapus donasi:", err);
+                res
+                  .status(500)
+                  .json({ message: "Gagal menghapus data donasi." });
+              });
+            }
+
+            conn.commit((err) => {
+              if (err) {
+                return conn.rollback(() => {
+                  res
+                    .status(500)
+                    .json({ message: "Gagal menyelesaikan transaksi." });
+                });
+              }
+              res.json({
+                message:
+                  "Donasi berhasil dihapus dan total kampanye telah diperbarui!",
+              });
+            });
+          });
+        }
+      );
+    });
+  });
+});
+
 app.get("/api/user", (req, res) => {
   if (req.session && req.session.username) {
     res.status(200).json({ username: req.session.username });
@@ -344,7 +454,7 @@ app.get("/api/stats/total-kampanye", (req, res) => {
 });
 
 app.post("/api/campaigns", (req, res) => {
-  const { title, description, target_amount, end_date } = req.body;
+  const { title, description, target_amount, end_date, image_url } = req.body;
 
   if (!title || !target_amount || !end_date) {
     return res
@@ -353,8 +463,9 @@ app.post("/api/campaigns", (req, res) => {
   }
 
   const query =
-    "INSERT INTO campaigns (title, description, target_amount, end_date, status, current_amount) VALUES (?, ?, ?, ?, 'active', 0)";
-  const params = [title, description, target_amount, end_date];
+    "INSERT INTO campaigns (title, description, target_amount, end_date, image_url, status, current_amount) VALUES (?, ?, ?, ?, ?, 'active', 0)";
+
+  const params = [title, description, target_amount, end_date, image_url];
 
   conn.query(query, params, (err, results) => {
     if (err) {
@@ -363,7 +474,6 @@ app.post("/api/campaigns", (req, res) => {
         .status(500)
         .json({ message: "Gagal menyimpan kampanye ke database." });
     }
-
     res.status(201).json({
       message: "Kampanye baru berhasil ditambahkan!",
       newCampaignId: results.insertId,

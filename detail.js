@@ -82,8 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok)
         throw new Error(result.message || "Gagal mengirim donasi.");
 
-      alert("Terima kasih! Donasi Anda telah berhasil dikirim.");
-      window.location.reload();
+      showSuccessModal("Terima kasih! Donasi Anda telah berhasil diterima.");
     } catch (error) {
       alert(`Error: ${error.message}`);
     }
@@ -94,3 +93,21 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("donation-form")
     .addEventListener("submit", handleDonationSubmit);
 });
+
+function showSuccessModal(message) {
+  const modal = document.getElementById("success-modal");
+  const modalMessage = document.getElementById("modal-message");
+  const closeButton = document.getElementById("modal-close-btn");
+
+  modalMessage.textContent = message;
+
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+
+  closeButton.onclick = () => {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+
+    window.location.reload();
+  };
+}
