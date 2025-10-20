@@ -108,14 +108,22 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  const {
-    username,
-    password
-  } = req.body;
   const { username, password } = req.body;
-  if (!username || !password)
-    return res.send("Semua field wajib diisi!");
-    return res.send("<h3 style='color:red;'>Semua field wajib diisi!</h3>");
+
+  if (!username || !password) {
+    return res.send(`
+      <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8d7da;">
+        <div style="background:white; padding:30px; border-radius:12px; text-align:center; width:400px;">
+          <h3 style="color:#721c24;">Register Gagal</h3>
+          <p>Semua field wajib diisi!</p>
+          <button onclick="window.location.href='/register.html'" 
+                  style="margin-top:20px; background-color:#dc3545; color:white; border:none; padding:10px 20px; border-radius:8px;">
+            Kembali
+          </button>
+        </div>
+      </div>
+    `);
+  }
 
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
@@ -123,62 +131,23 @@ app.post("/register", (req, res) => {
 
   if (!hasUppercase || !hasNumber || !isLongEnough) {
     return res.send(`
-      <div style="
-        display:flex; 
-        justify-content:center; 
-        align-items:center; 
-        height:100vh; 
-        background-color:rgba(0,0,0,0.5);
-      ">
-        <div style="
-          background:white; 
-          padding:30px; 
-          border-radius:12px; 
-          text-align:center; 
-          width:400px;
-          box-shadow:0 0 20px rgba(0,0,0,0.2);
-          font-family:Arial, sans-serif;
-          animation:fadeIn 0.3s ease-in-out;
-        ">
-          <h3 style="color:#e74c3c; font-size:20px; margin-bottom:10px;">
-            Register Gagal
-          </h3>
-          <p style="color:#333; font-size:15px;">
-            Password harus memiliki minimal <b>6 karakter</b>, 
-            mengandung setidaknya <b>1 huruf kapital</b> dan <b>1 angka</b>.
-          </p>
-          <button 
-            onclick="window.location.href='/register.html'" 
-            style="
-              margin-top:20px; 
-              background-color:#3498db; 
-              color:white; 
-              border:none; 
-              padding:10px 20px; 
-              border-radius:8px; 
-              cursor:pointer;
-              transition:background 0.2s;
-            "
-            onmouseover="this.style.background='#2980b9'"
-            onmouseout="this.style.background='#3498db'"
-          >
-            Kembali ke Register
+      <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8d7da;">
+        <div style="background:white; padding:30px; border-radius:12px; text-align:center; width:400px;">
+          <h3 style="color:#721c24;">Register Gagal</h3>
+          <p>Password harus memiliki minimal 6 karakter, mengandung setidaknya satu huruf kapital dan satu angka.</p>
+          <button onclick="window.location.href='/register.html'" 
+                  style="margin-top:20px; background-color:#dc3545; color:white; border:none; padding:10px 20px; border-radius:8px;">
+            Kembali
           </button>
         </div>
       </div>
-
-      <style>
-        @keyframes fadeIn {
-          from {opacity:0; transform:scale(0.9);}
-          to {opacity:1; transform:scale(1);}
-        }
-      </style>
     `);
   }
 
   const q = "INSERT INTO account (Username, Password) VALUES (?, ?)";
   conn.query(q, [username, password], (err) => {
-@@ -81,6 +137,7 @@ app.post("/register", (req, res) => {
+    if (err) return res.status(500).send("Database Insert Error");
+    res.redirect("/");
   });
 });
 
@@ -549,4 +518,5 @@ app.post("/api/campaigns", (req, res) => {
 app.listen(3001, () => {
   console.log("Server running at http://localhost:3001");
 });
+
 
