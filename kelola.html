@@ -2,30 +2,44 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kelola Donasi</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-6">
-   <header class="flex justify-between items-center p-4 bg-blue-600 text-white">
-    <h1 class="text-2xl font-bold mb-4">Kelola Donasi</h1>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <header class="flex flex-col sm:flex-row justify-between items-center gap-3 p-4 bg-blue-600 text-white shadow-md">
+    <h1 class="text-xl sm:text-2xl font-bold text-center sm:text-left">Kelola Donasi</h1>
     <nav>
-     <a href="/admin_main.html" class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100">Kembali ke menu</a>
+      <a href="/admin_main.html"
+         class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 shadow-sm font-medium block sm:inline text-center">
+        Kembali ke Menu
+      </a>
     </nav>
   </header>
-  
-  <table class="table-auto w-full bg-white shadow-md">
-    <thead class="bg-blue-600 text-white">
-      <tr>
-        <th class="p-2">ID</th>
-        <th class="p-2">Nama</th>
-        <th class="p-2">Nominal</th>
-        <th class="p-2">Pesan</th>
-        <th class="p-2">Tanggal</th>
-        <th class="p-2">Aksi</th>
-      </tr>
-    </thead>
-    <tbody id="donasiTable"></tbody>
-  </table>
+
+  <main class="flex-grow p-4">
+    <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+      <table class="min-w-full table-auto text-sm">
+        <thead class="bg-blue-600 text-white text-center">
+          <tr>
+            <th class="p-3">ID</th>
+            <th class="p-3">Nama</th>
+            <th class="p-3">Nominal</th>
+            <th class="p-3">Pesan</th>
+            <th class="p-3">Tanggal</th>
+            <th class="p-3">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="donasiTable" class="text-gray-700 text-center"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="bg-blue-600 text-center text-white py-3 text-xs sm:text-sm mt-6">
+    © 2025 Semuabisa.com — Panel Admin Donasi
+  </footer>
 
   <script src="kelola.js"></script>
 </body>
