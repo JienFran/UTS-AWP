@@ -30,13 +30,15 @@ app.use(
 
 app.use(express.static(__dirname));
 
-const conn = mysql.createConnection({
-  host: "trolley.proxy.rlwy.net",
-  port: "34469",
-  user: "root",
-  password: "AvSBodNsdedddbCqMVFCgQarhfkijnAo",
-  database: "railway"
-});
+//const conn = mysql.createConnection({
+//  host: "trolley.proxy.rlwy.net",
+//  port: "34469",
+//  user: "root",
+//  password: "AvSBodNsdedddbCqMVFCgQarhfkijnAo",
+//  database: "railway"
+//});
+
+const conn = require("./koneksi");
 
 app.get("/", (req, res) => {
   fs.readFile("index.html", "utf-8", (err, data) => {
