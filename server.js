@@ -50,7 +50,7 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password)
-    return res.send(`<!DOCTYPE html>
+     return res.send(`<!DOCTYPE html>
       <head>
         <title>Gagal Login!</title>
         <script src="https://cdn.tailwindcss.com"></script>
@@ -132,7 +132,7 @@ app.post("/register", (req, res) => {
   const isLongEnough = password.length >= 6;
 
   if (!hasUppercase || !hasNumber || !isLongEnough) {
-    return res.send(`
+  return res.send(`
       <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8d7da;">
         <div style="background:white; padding:30px; border-radius:12px; text-align:center; width:400px;">
           <h3 style="color:#721c24;">Register Gagal</h3>
@@ -187,7 +187,7 @@ app.post("/admin_login", (req, res) => {
         res.send(html);
       });
     } else {
-      res.send(`<!DOCTYPE html>
+   res.send(`<!DOCTYPE html>
         <head>
           <title>Gagal Login Admin!</title>
           <script src="https://cdn.tailwindcss.com"></script>
@@ -520,5 +520,6 @@ app.post("/api/campaigns", (req, res) => {
 app.listen(3001, () => {
   console.log("Server running at http://localhost:3001");
 });
+
 
 
