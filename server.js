@@ -30,16 +30,32 @@ app.use(
 
 app.use(express.static(__dirname));
 
-//const conn = mysql.createConnection({
-//  host: "trolley.proxy.rlwy.net",
-//  port: "34469",
-//  user: "root",
-//  password: "AvSBodNsdedddbCqMVFCgQarhfkijnAo",
-//  database: "railway"
-//});
-
 const conn = require("./koneksi");
 
+
+// ==========================================================
+// 🔥 UNIVERSAL NOTIFICATION TEMPLATE RENDERER
+// ==========================================================
+function renderNotification(res, { title, header, message, button, redirect }) {
+  fs.readFile("notification.html", "utf-8", (err, html) => {
+    if (err) return res.status(500).send("Internal Server Error (Template)");
+
+    html = html
+      .replace("<!--TITLE-->", title)
+      .replace("<!--HEADER-->", header)
+      .replace("<!--MESSAGE-->", message)
+      .replace("<!--BUTTON-->", button)
+      .replace("<!--REDIRECT-->", redirect);
+
+    res.send(html);
+  });
+}
+
+
+
+// ==========================================================
+// HOME
+// ==========================================================
 app.get("/", (req, res) => {
   fs.readFile("index.html", "utf-8", (err, data) => {
     if (err) return res.status(500).send("Internal Server Error");
@@ -47,29 +63,22 @@ app.get("/", (req, res) => {
   });
 });
 
+
+
+// ==========================================================
+// LOGIN
+// ==========================================================
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
+
   if (!username || !password)
-     return res.send(`<!DOCTYPE html>
-      <head>
-        <title>Gagal Login!</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-      </head>
-      <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-red-50 to-red-200">
-        <div class="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
-          <div class="flex justify-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 016.5 6.5 6.5 6.5 0 01-13 0A6.5 6.5 0 0112 5.5z" />
-            </svg>
-          </div>
-          <h2 class="text-2xl font-semibold text-red-600 mb-2">Login Gagal!</h2>
-          <p class="text-gray-700 mb-6">Username atau password tidak boleh kosong!</p>
-          <a href="/login.html" class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300 ease-in-out">
-            Coba Lagi
-          </a>
-        </div>
-      </body>
-    </html>`);
+    return renderNotification(res, {
+      title: "Login Gagal",
+      header: "Login Gagal!",
+      message: "Username atau password tidak boleh kosong.",
+      button: "Coba Lagi",
+      redirect: "/login.html",
+    });
 
   const q = "SELECT * FROM account WHERE Username = ? AND Password = ?";
   conn.query(q, [username, password], (err, results) => {
@@ -81,50 +90,38 @@ app.post("/login", (req, res) => {
 
       fs.readFile("main.html", "utf-8", (err, content) => {
         if (err) return res.status(500).send("Internal Server Error");
+
         const html = content.replace("<!--USERNAME-->", results[0].Username);
         res.send(html);
       });
     } else {
-      res.send(`<!DOCTYPE html>
-        <head>
-          <title>Gagal Login!</title>
-          <script src="https://cdn.tailwindcss.com"></script>
-        </head>
-        <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-red-50 to-red-200">
-          <div class="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
-            <div class="flex justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 016.5 6.5 6.5 6.5 0 01-13 0A6.5 6.5 0 0112 5.5z" />
-              </svg>
-            </div>
-            <h2 class="text-2xl font-semibold text-red-600 mb-2">Login Gagal!</h2>
-            <p class="text-gray-700 mb-6">Username atau password yang kamu masukkan salah!</p>
-            <a href="/login.html" class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300 ease-in-out">
-              Coba Lagi
-            </a>
-          </div>
-        </body>
-      </html>`);
+      return renderNotification(res, {
+        title: "Login Gagal",
+        header: "Login Gagal!",
+        message: "Username atau password yang kamu masukkan salah.",
+        button: "Coba Lagi",
+        redirect: "/login.html",
+      });
     }
   });
 });
 
+
+
+// ==========================================================
+// REGISTER
+// ==========================================================
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.send(`
-      <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8d7da;">
-        <div style="background:white; padding:30px; border-radius:12px; text-align:center; width:400px;">
-          <h3 style="color:#721c24;">Register Gagal</h3>
-          <p>Semua field wajib diisi!</p>
-          <button onclick="window.location.href='/register.html'" 
-                  style="margin-top:20px; background-color:#dc3545; color:white; border:none; padding:10px 20px; border-radius:8px;">
-            Kembali
-          </button>
-        </div>
-      </div>
-    `);
+    return renderNotification(res, {
+      title: "Register Gagal",
+      header: "Form Tidak Lengkap",
+      message: "Semua field wajib diisi.",
+      button: "Kembali",
+      redirect: "/register.html",
+    });
   }
 
   const hasUppercase = /[A-Z]/.test(password);
@@ -132,18 +129,14 @@ app.post("/register", (req, res) => {
   const isLongEnough = password.length >= 6;
 
   if (!hasUppercase || !hasNumber || !isLongEnough) {
-  return res.send(`
-      <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8d7da;">
-        <div style="background:white; padding:30px; border-radius:12px; text-align:center; width:400px;">
-          <h3 style="color:#721c24;">Register Gagal</h3>
-          <p>Password harus memiliki minimal 6 karakter, mengandung setidaknya satu huruf kapital dan satu angka.</p>
-          <button onclick="window.location.href='/register.html'" 
-                  style="margin-top:20px; background-color:#dc3545; color:white; border:none; padding:10px 20px; border-radius:8px;">
-            Kembali
-          </button>
-        </div>
-      </div>
-    `);
+    return renderNotification(res, {
+      title: "Register Gagal",
+      header: "Password Tidak Valid",
+      message:
+        "Password harus memiliki minimal 6 karakter, mengandung 1 huruf kapital dan 1 angka.",
+      button: "Kembali",
+      redirect: "/register.html",
+    });
   }
 
   const q = "INSERT INTO account (Username, Password) VALUES (?, ?)";
@@ -153,12 +146,22 @@ app.post("/register", (req, res) => {
   });
 });
 
+
+
+// ==========================================================
+// LOGOUT
+// ==========================================================
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
 });
 
+
+
+// ==========================================================
+// ADMIN LOGIN
+// ==========================================================
 app.get("/admin", (req, res) => {
   fs.readFile("admin_login.html", "utf-8", (err, data) => {
     if (err) return res.status(500).send("Internal Server Error");
@@ -180,6 +183,7 @@ app.post("/admin_login", (req, res) => {
 
       fs.readFile("admin_main.html", "utf-8", (err, content) => {
         if (err) return res.status(500).send("Internal Server Error");
+
         const html = content.replace(
           "<!--USERNAME-->",
           `${results[0].Username_Admin} (Admin)`
@@ -187,29 +191,26 @@ app.post("/admin_login", (req, res) => {
         res.send(html);
       });
     } else {
-   res.send(`<!DOCTYPE html>
-        <head>
-          <title>Gagal Login Admin!</title>
-          <script src="https://cdn.tailwindcss.com"></script>
-        </head>
-        <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-rose-50 to-pink-100">
-          <div class="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
-            <div class="flex justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 016.5 6.5 6.5 6.5 0 01-13 0A6.5 6.5 0 0112 5.5z" />
-              </svg>
-            </div>
-            <h2 class="text-2xl font-semibold text-red-600 mb-2">Login Admin Gagal!</h2>
-            <p class="text-gray-700 mb-6">Username atau password admin salah!</p>
-            <a href="/admin" class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300 ease-in-out">
-              Coba Lagi
-            </a>
-          </div>
-        </body>
-      </html>`);
+      return renderNotification(res, {
+        title: "Login Admin Gagal",
+        header: "Login Admin Gagal!",
+        message: "Username atau password admin salah!",
+        button: "Coba Lagi",
+        redirect: "/admin",
+      });
     }
   });
 });
+
+
+
+// ==========================================================
+// API CAMPAIGNS, DONASI, STATS (TIDAK DIUBAH)
+// ==========================================================
+/* 
+SEMUA ROUTE PANJANGMU TETAP SAMA 100%.
+TIDAK ADA YANG DIUBAH.
+*/
 
 app.get("/api/campaigns", (req, res) => {
   const search = req.query.search || "";
@@ -234,6 +235,7 @@ app.get("/api/campaigns", (req, res) => {
   });
 });
 
+
 app.get("/api/campaigns/:id", (req, res) => {
   const { id } = req.params;
 
@@ -254,6 +256,7 @@ app.get("/api/campaigns/:id", (req, res) => {
     }
   });
 });
+
 
 app.put("/api/campaigns/:id", (req, res) => {
   const { id } = req.params;
@@ -280,6 +283,7 @@ app.put("/api/campaigns/:id", (req, res) => {
   });
 });
 
+
 app.delete("/api/campaigns/:id", (req, res) => {
   const { id } = req.params;
   const query = "DELETE FROM campaigns WHERE id = ?";
@@ -295,6 +299,11 @@ app.delete("/api/campaigns/:id", (req, res) => {
     res.json({ message: "Kampanye berhasil dihapus!" });
   });
 });
+
+
+// (DARI SINI SEMUA ROUTE DONASI, ADMIN DONASI, STATISTIK, CREATE CAMPAIGN
+// 100% ORIGINAL TIDAK AKU SENTUH)
+// ————————————————————————————————————————
 
 app.delete("/api/admin/donasi/:id", (req, res) => {
   const { id } = req.params;
@@ -365,6 +374,7 @@ app.delete("/api/admin/donasi/:id", (req, res) => {
   });
 });
 
+
 app.get("/api/user", (req, res) => {
   if (req.session && req.session.username) {
     res.status(200).json({ username: req.session.username });
@@ -372,6 +382,7 @@ app.get("/api/user", (req, res) => {
     res.status(401).json({ message: "User not authenticated" });
   }
 });
+
 
 app.post("/api/donate", (req, res) => {
   if (!req.session.userId) {
@@ -446,6 +457,7 @@ app.post("/api/donate", (req, res) => {
   });
 });
 
+
 app.get("/api/admin/donasi", (req, res) => {
   const search = req.query.search ? `%${req.query.search}%` : "%";
   const q = `
@@ -464,6 +476,7 @@ app.get("/api/admin/donasi", (req, res) => {
   });
 });
 
+
 app.get("/api/stats/total-donasi", (req, res) => {
   const q = "SELECT SUM(nominal) AS totalDonasi FROM donasi";
   conn.query(q, (err, results) => {
@@ -473,6 +486,7 @@ app.get("/api/stats/total-donasi", (req, res) => {
   });
 });
 
+
 app.get("/api/stats/jumlah-donatur", (req, res) => {
   const q = "SELECT COUNT(DISTINCT user_id) AS jumlahDonatur FROM donasi";
   conn.query(q, (err, results) => {
@@ -481,6 +495,7 @@ app.get("/api/stats/jumlah-donatur", (req, res) => {
   });
 });
 
+
 app.get("/api/stats/total-kampanye", (req, res) => {
   const q = "SELECT COUNT(*) AS totalKampanye FROM campaigns";
   conn.query(q, (err, results) => {
@@ -488,6 +503,7 @@ app.get("/api/stats/total-kampanye", (req, res) => {
     res.json({ totalKampanye: results[0].totalKampanye });
   });
 });
+
 
 app.post("/api/campaigns", (req, res) => {
   const { title, description, target_amount, end_date, image_url } = req.body;
@@ -517,9 +533,11 @@ app.post("/api/campaigns", (req, res) => {
   });
 });
 
+
+
+// ==========================================================
+// SERVER ON
+// ==========================================================
 app.listen(3001, () => {
   console.log("Server running at http://localhost:3001");
 });
-
-
-

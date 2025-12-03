@@ -9,52 +9,97 @@
 </head>
 
 <body class="bg-gradient-to-b from-blue-50 to-white min-h-screen scroll-smooth font-sans text-gray-800">
-    <section id="home" class="relative min-h-[70vh] sm:min-h-[80vh]">
-    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/20">
-        <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1600&q=80"
-            alt="Gambar Donasi" class="w-full h-full object-cover">
+
+  <!-- HERO SECTION -->
+  <section id="home" class="relative min-h-[70vh] sm:min-h-[80vh]">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1600&q=80"
+        alt="Gambar Donasi" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-black/60"></div>
     </div>
 
-    <div class="relative z-10 flex flex-col justify-center items-center text-white px-4 pt-32 pb-20 sm:pt-40 md:pt-48 h-full">
-        <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 drop-shadow-xl tracking-wide text-center">
-            Bersama Kita Bisa Berbagi
-        </h2>
-        <p class="text-base sm:text-lg md:text-xl max-w-2xl xl:max-w-3xl text-center drop-shadow-lg leading-relaxed px-2 sm:px-4 bg-black/30 backdrop-blur-sm py-4 sm:py-6 rounded-xl">
-            Donasi bukan hanya tentang uang, tapi tentang cinta, harapan, dan kebaikan yang menular.
-        </p>
+    <div
+      class="relative z-10 flex flex-col justify-center items-center text-white px-4 pt-32 pb-20 sm:pt-40 md:pt-48 h-full">
+      <h2
+        class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 drop-shadow-xl tracking-wide text-center">
+        Bersama Kita Bisa Berbagi
+      </h2>
+      <p
+        class="text-base sm:text-lg md:text-xl max-w-2xl xl:max-w-3xl text-center drop-shadow-lg leading-relaxed px-2 sm:px-4 py-4 sm:py-6 rounded-xl">
+        Donasi bukan hanya tentang uang, tapi tentang cinta, harapan, dan kebaikan yang menular.
+      </p>
+      <a href="login.html"
+        class="mt-5 sm:mt-7 px-9 sm:px-11 md:px-12 py-4 sm:py-5 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition duration-300 text-lg sm:text-xl">
+        Login
+      </a>
     </div>
 
-    <header class="fixed top-0 left-0 w-full flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 md:px-10 py-3 sm:py-4 text-white z-50 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm border-b border-white/10">
-        <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-0">
-            <img src="logo.png" alt="Logo Donasi" class="h-8 sm:h-10 w-auto object-contain">
-            <h1 class="text-xl sm:text-2xl font-bold tracking-wide hover:text-blue-300 transition duration-300 drop-shadow-lg">
-                Semuabisa.com
-            </h1>
+    <!-- NAVBAR -->
+    <header class="fixed top-0 left-0 w-full flex items-center justify-between 
+    px-4 sm:px-6 md:px-10 py-4 text-white z-50
+    bg-black/30 sm:bg-black/50 
+    backdrop-blur-md border-b border-white/10">
+
+      <!-- LOGO -->
+      <div class="flex items-center gap-3">
+        <img src="logo.png" alt="Logo Donasi" class="h-10 w-auto object-contain">
+        <h1 class="text-2xl font-bold tracking-wide hover:text-blue-300 transition">Semuabisa.com</h1>
+      </div>
+
+      <!-- MOBILE MENU BUTTON -->
+      <button id="menuBtn" class="sm:hidden text-white text-3xl focus:outline-none">☰</button>
+
+      <!-- NAV LINKS -->
+      <nav id="navMenu"
+      class="hidden sm:block
+         sm:static absolute top-full left-0
+         w-full sm:w-auto
+         p-6 sm:p-0 mt-2 sm:mt-0
+         rounded sm:rounded-none
+         bg-black/30 sm:bg-transparent
+         backdrop-blur-md sm:backdrop-blur-0
+         sm:bg-none sm:backdrop-blur-none">
+
+        <ul class="flex flex-col sm:flex-row gap-4 sm:gap-6 text-white font-medium text-base bg-transparent">
+          <li><a href="#home" class="hover:text-blue-300 transition sm:px-0 sm:py-0 px-2 py-1">Home</a></li>
+          <li><a href="#explore" class="hover:text-blue-300 transition sm:px-0 sm:py-0 px-2 py-1">Explore</a></li>
+          <li><a href="#donate" class="hover:text-blue-300 transition sm:px-0 sm:py-0 px-2 py-1">Donate Now</a></li>
+          <li><a href="#about" class="hover:text-blue-300 transition sm:px-0 sm:py-0 px-2 py-1">About Us</a></li>
+        </ul>
+
+        <!-- REGISTER + LOGIN (MOBILE) -->
+        <div class="flex sm:hidden flex-col gap-4 mt-6">
+          <a href="register.html"
+            class="px-5 py-2 bg-green-500 rounded-lg hover:bg-green-600 transition shadow-md text-base font-medium text-center">
+            Register
+          </a>
+          <a href="login.html"
+            class="px-5 py-2 bg-gray-700/60 rounded-lg hover:bg-gray-700/80 transition shadow-md text-base font-medium text-center backdrop-blur-sm">
+            Login
+          </a>
         </div>
 
-        <nav class="flex-1 mb-3 sm:mb-0">
-            <ul class="flex flex-wrap justify-center gap-3 sm:gap-5 md:gap-8 text-white font-medium text-sm sm:text-base">
-                <li><a href="#home" class="hover:text-blue-300 transition duration-300 px-2 py-1 rounded hover:bg-white/10">Home</a></li>
-                <li><a href="#explore" class="hover:text-blue-300 transition duration-300 px-2 py-1 rounded hover:bg-white/10">Explore</a></li>
-                <li><a href="#donate" class="hover:text-blue-300 transition duration-300 px-2 py-1 rounded hover:bg-white/10">Donate Now</a></li>
-                <li><a href="#about" class="hover:text-blue-300 transition duration-300 px-2 py-1 rounded hover:bg-white/10">About Us</a></li>
-            </ul>
-        </nav>
+      </nav>
 
-        <div class="flex items-center gap-2 sm:gap-4">
-            <a href="register.html"
-              class="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 focus:ring-4 focus:ring-green-300 transition duration-300 shadow-md text-sm sm:text-base whitespace-nowrap">
-              Register
-            </a>
-            <a href="login.html"
-                class="px-3 sm:px-5 py-1.5 sm:py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg focus:ring-4 focus:ring-red-300 transition duration-300 shadow-lg text-sm sm:text-base">
-                Login
-            </a>
-        </div>
+      <!-- DESKTOP REGISTER + LOGIN -->
+      <div class="hidden sm:flex items-center gap-4">
+        <a href="register.html"
+          class="px-5 py-2 bg-green-500 rounded-lg hover:bg-green-600 transition shadow-md text-base font-medium">
+          Register
+        </a>
+        <a href="login.html"
+          class="px-5 py-2 bg-gray-700/60 rounded-lg hover:bg-gray-700/80 transition shadow-md text-base font-medium backdrop-blur-sm">
+          Login
+        </a>
+      </div>
+
     </header>
-</section>
 
 
+  </section>
+
+
+  <!-- MAIN CONTENT -->
   <main class="flex-grow p-4 sm:p-6 md:p-8 max-w-6xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
 
     <section id="explore"
@@ -71,36 +116,38 @@
       </div>
     </section>
 
-    <section class="bg-white shadow-lg rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-10 text-center hover:shadow-xl transition duration-300">
-      <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Ikon hati" class="w-16 sm:w-20 mx-auto mb-4 sm:mb-6">
+    <section
+      class="bg-white shadow-lg rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-10 text-center hover:shadow-xl transition duration-300">
+      <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Ikon hati"
+        class="w-16 sm:w-20 mx-auto mb-4 sm:mb-6">
       <h2 class="text-2xl sm:text-3xl font-semibold mb-3 sm:mb-4 text-blue-700">Kenapa Donasi Itu Penting?</h2>
       <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-sm sm:text-base md:text-lg px-2">
-        Donasi membantu menciptakan perubahan nyata di sekitar kita. Dengan berbagi, kita menebarkan harapan,
-        menghapus air mata, dan membawa senyum baru bagi mereka yang membutuhkan.
+        Donasi membantu menciptakan perubahan nyata di sekitar kita. Dengan berbagi, kita menebarkan harapan, menghapus
+        air mata, dan membawa senyum baru bagi mereka yang membutuhkan.
         Kebaikan kecil dari Anda bisa jadi harapan besar bagi orang lain.
       </p>
     </section>
 
-    <section id="about" class="bg-white shadow-lg rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 hover:shadow-xl transition duration-300">
+    <section id="about"
+      class="bg-white shadow-lg rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 hover:shadow-xl transition duration-300">
       <h2 class="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-blue-700 text-center">Tujuan Kami</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-gray-700">
         <div class="p-4 sm:p-6 border rounded-xl hover:bg-blue-50 transition duration-300 text-center">
-          <img src="https://cdn-icons-png.flaticon.com/512/4206/4206270.png" alt="Ikon berbagi"
-            class="w-12 sm:w-14 mx-auto mb-3">
+          <img src="https://cdn-icons-png.flaticon.com/512/4206/4206270.png" class="w-12 sm:w-14 mx-auto mb-3">
           <h3 class="font-semibold mb-2 text-base sm:text-lg">Mendorong Kepedulian</h3>
-          <p class="text-sm sm:text-base">Membangun rasa empati dan semangat berbagi di masyarakat melalui kegiatan donasi digital.</p>
+          <p class="text-sm sm:text-base">Membangun rasa empati dan semangat berbagi.</p>
         </div>
+
         <div class="p-4 sm:p-6 border rounded-xl hover:bg-blue-50 transition duration-300 text-center">
-          <img src="https://cdn-icons-png.flaticon.com/512/4319/4319057.png" alt="Ikon transparansi"
-            class="w-12 sm:w-14 mx-auto mb-3">
+          <img src="https://cdn-icons-png.flaticon.com/512/4319/4319057.png" class="w-12 sm:w-14 mx-auto mb-3">
           <h3 class="font-semibold mb-2 text-base sm:text-lg">Transparansi Donasi</h3>
-          <p class="text-sm sm:text-base">Setiap pengguna dapat memantau donasinya secara langsung dengan aman dan terpercaya.</p>
+          <p class="text-sm sm:text-base">Memberikan akses untuk memantau donasi dengan aman.</p>
         </div>
+
         <div class="p-4 sm:p-6 border rounded-xl hover:bg-blue-50 transition duration-300 text-center">
-          <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" alt="Ikon bantuan"
-            class="w-12 sm:w-14 mx-auto mb-3">
+          <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" class="w-12 sm:w-14 mx-auto mb-3">
           <h3 class="font-semibold mb-2 text-base sm:text-lg">Tepat Sasaran</h3>
-          <p class="text-sm sm:text-base">Bantuan disalurkan kepada mereka yang benar-benar membutuhkan sesuai kategori donasi.</p>
+          <p class="text-sm sm:text-base">Donasi diberikan kepada yang benar-benar membutuhkan.</p>
         </div>
       </div>
     </section>
@@ -117,13 +164,14 @@
         </ol>
       </div>
       <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=600&q=80"
-        alt="Langkah Donasi" class="w-full md:w-1/2 rounded-xl object-cover shadow-md h-48 sm:h-56 md:h-auto">
+        class="w-full md:w-1/2 rounded-xl object-cover shadow-md h-48 sm:h-56 md:h-auto">
     </section>
 
     <section id="donate"
       class="bg-gradient-to-r from-green-500 to-green-600 shadow-lg rounded-xl md:rounded-2xl p-6 sm:p-8 md:p-10 text-center text-white">
       <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Ayo Mulai Berdonasi Sekarang</h2>
-      <p class="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg px-2">Setiap kontribusi kecilmu bisa membawa perubahan besar bagi mereka yang membutuhkan.</p>
+      <p class="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg px-2">Setiap kontribusi kecil bisa membawa
+        perubahan besar.</p>
       <a href="login.html"
         class="inline-block bg-white text-green-600 font-semibold py-2 sm:py-3 px-6 sm:px-8 rounded-full hover:bg-gray-100 transition duration-300 shadow-md text-sm sm:text-base">
         Login
@@ -132,6 +180,7 @@
 
   </main>
 
+  <!-- FOOTER -->
   <footer class="bg-blue-700 text-white text-center py-4 sm:py-6 mt-8 sm:mt-10 shadow-inner text-sm sm:text-base">
     <p>© 2025 <b>Semuabisa.com</b> — Bersama Kita Bisa</p>
   </footer>
@@ -142,19 +191,31 @@
   html {
     scroll-behavior: smooth;
   }
-  
+
   @keyframes bounce-slow {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: translateY(0);
     }
+
     50% {
       transform: translateY(-10px);
     }
   }
-  
+
   .animate-bounce-slow {
     animation: bounce-slow 2s infinite;
   }
 </style>
+
+<script>
+  const menuBtn = document.getElementById("menuBtn");
+  const navMenu = document.getElementById("navMenu");
+
+  menuBtn.addEventListener("click", () => {
+    navMenu.classList.toggle("hidden");
+  });
+</script>
 
 </html>
