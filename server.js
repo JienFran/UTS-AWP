@@ -41,11 +41,11 @@ function renderNotification(res, { title, header, message, button, redirect }) {
     if (err) return res.status(500).send("Internal Server Error (Template)");
 
     html = html
-      .replace("<!--TITLE-->", title)
-      .replace("<!--HEADER-->", header)
-      .replace("<!--MESSAGE-->", message)
-      .replace("<!--BUTTON-->", button)
-      .replace("<!--REDIRECT-->", redirect);
+      .replace("", title)
+      .replace("", header)
+      .replace("", message)
+      .replace("", button)
+      .replace("", redirect);
 
     res.send(html);
   });
@@ -91,7 +91,7 @@ app.post("/login", (req, res) => {
       fs.readFile("main.html", "utf-8", (err, content) => {
         if (err) return res.status(500).send("Internal Server Error");
 
-        const html = content.replace("<!--USERNAME-->", results[0].Username);
+        const html = content.replace("", results[0].Username);
         res.send(html);
       });
     } else {
@@ -185,7 +185,7 @@ app.post("/admin_login", (req, res) => {
         if (err) return res.status(500).send("Internal Server Error");
 
         const html = content.replace(
-          "<!--USERNAME-->",
+          "",
           `${results[0].Username_Admin} (Admin)`
         );
         res.send(html);
@@ -205,12 +205,8 @@ app.post("/admin_login", (req, res) => {
 
 
 // ==========================================================
-// API CAMPAIGNS, DONASI, STATS (TIDAK DIUBAH)
+// API CAMPAIGNS, DONASI, STATS
 // ==========================================================
-/* 
-SEMUA ROUTE PANJANGMU TETAP SAMA 100%.
-TIDAK ADA YANG DIUBAH.
-*/
 
 app.get("/api/campaigns", (req, res) => {
   const search = req.query.search || "";
@@ -301,8 +297,7 @@ app.delete("/api/campaigns/:id", (req, res) => {
 });
 
 
-// (DARI SINI SEMUA ROUTE DONASI, ADMIN DONASI, STATISTIK, CREATE CAMPAIGN
-// 100% ORIGINAL TIDAK AKU SENTUH)
+// (ROUTING DONASI, ADMIN DONASI, STATISTIK)
 // ————————————————————————————————————————
 
 app.delete("/api/admin/donasi/:id", (req, res) => {
@@ -533,7 +528,86 @@ app.post("/api/campaigns", (req, res) => {
   });
 });
 
+// BULK INSERT DONASI (Multiple Rows Save) - safe, validates campaign existence
+app.post("/api/admin/donasi/bulk", (req, res) => {
+  const entries = req.body;
 
+  if (!Array.isArray(entries) || entries.length === 0) {
+    return res.status(400).json({ message: "Data bulk kosong atau tidak valid." });
+  }
+
+  // === TECHNICAL DECISION: use an existing account ID to satisfy FK constraint
+  // IMPORTANT: This DOES NOT mean jienfran is admin. This is only a technical filler
+  // until you can add a dedicated system/account user in the DB.
+  const SYSTEM_USER_ACCOUNT_ID = 6; // <-- keep as-is for now (existing account)
+
+  // Validate shape
+  for (const d of entries) {
+    if (!d.nama || !d.nominal || !d.campaignId) {
+      return res.status(400).json({
+        message: "Setiap baris wajib memiliki nama, nominal, dan campaignId.",
+      });
+    }
+  }
+
+  // Normalize values
+  const normalized = entries.map(e => ({
+    nama: String(e.nama).trim(),
+    nominal: Number(e.nominal),
+    pesan: e.pesan ? String(e.pesan).trim() : "",
+    campaignId: Number(e.campaignId),
+  }));
+
+  // 1) Validate that all referenced campaign IDs exist (prevents FK error)
+  const campaignIds = Array.from(new Set(normalized.map(x => x.campaignId)));
+  const placeholders = campaignIds.map(() => "?").join(",");
+  conn.query(
+    `SELECT id FROM campaigns WHERE id IN (${placeholders})`,
+    campaignIds,
+    (err, rows) => {
+      if (err) {
+        console.error("Error checking campaigns:", err);
+        return res.status(500).json({ message: "Gagal validasi campaign.", error: err });
+      }
+
+      const foundIds = rows.map(r => r.id);
+      const missing = campaignIds.filter(id => !foundIds.includes(id));
+      if (missing.length > 0) {
+        return res.status(400).json({
+          message: `Campaign ID tidak ditemukan: ${missing.join(", ")}`,
+        });
+      }
+
+      // 2) Prepare values for bulk insert
+      const now = new Date();
+      const values = normalized.map(d => [
+        SYSTEM_USER_ACCOUNT_ID, // satisfy FK
+        d.nama,
+        d.nominal,
+        d.pesan,
+        now,
+        d.campaignId
+      ]);
+
+      const sql = `
+        INSERT INTO donasi (user_id, nama_donatur, nominal, pesan, tanggal, campaign_id)
+        VALUES ?
+      `;
+
+      conn.query(sql, [values], (insertErr, result) => {
+        if (insertErr) {
+          console.error("Error Bulk Insert:", insertErr);
+          return res.status(500).json({ message: "Gagal menyimpan donasi bulk.", error: insertErr });
+        }
+
+        return res.status(201).json({
+          message: "Donasi bulk berhasil disimpan!",
+          totalInserted: result.affectedRows,
+        });
+      });
+    }
+  );
+});
 
 // ==========================================================
 // SERVER ON

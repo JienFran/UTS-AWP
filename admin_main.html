@@ -16,7 +16,7 @@
     <!-- LEFT: LOGO -->
     <div class="flex items-center gap-3">
       <img src="logo.png" alt="Logo" class="h-8 sm:h-10 w-auto object-contain">
-<h1 class="text-lg sm:text-xl font-semibold tracking-wide">Admin - Semuabisa.com</h1>
+      <h1 class="text-lg sm:text-xl font-semibold tracking-wide">Admin - Semuabisa.com</h1>
 
     </div>
 
@@ -58,7 +58,8 @@
   </header>
 
   <main class="flex-grow max-w-6xl mx-auto mt-6 sm:mt-10 space-y-8 sm:space-y-12 px-3 sm:px-4">
-    <section id="stats" class="mt-3 bg-white p-4 sm:p-8 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
+    <section id="stats"
+      class="mt-3 bg-white p-4 sm:p-8 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
 
       <h2 class="mt-3 text-xl sm:text-3xl font-bold text-blue-700 text-center mb-6 sm:mb-8">
         Statistik Donasi
@@ -92,27 +93,27 @@
       </h2>
 
       <div class="mb-5 flex flex-wrap md:flex-nowrap items-end gap-3 sm:gap-4 w-full">
-  <input id="searchCampaign" type="text" placeholder="Cari kampanye"
-    class="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition text-sm sm:text-base" />
+        <input id="searchCampaign" type="text" placeholder="Cari kampanye"
+          class="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition text-sm sm:text-base" />
 
-  <select id="sortCampaign"
-    class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition text-sm sm:text-base w-full sm:w-auto">
-    <option value="">Urutkan berdasarkan</option>
-    <option value="donasi">Donasi Tertinggi</option>
-    <option value="target">Target Terbesar</option>
-    <option value="tanggal">Kampanye Terbaru</option>
-  </select>
+        <select id="sortCampaign"
+          class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition text-sm sm:text-base w-full sm:w-auto">
+          <option value="">Urutkan berdasarkan</option>
+          <option value="donasi">Donasi Tertinggi</option>
+          <option value="target">Target Terbesar</option>
+          <option value="tanggal">Kampanye Terbaru</option>
+        </select>
 
-  <button id="btnCreateCampaign"
-    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 sm:px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base w-full sm:w-auto">
-    Tambah
-  </button>
+        <button id="btnCreateCampaign"
+          class="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 sm:px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base w-full sm:w-auto">
+          Tambah
+        </button>
 
-  <button id="btnCampaignSearch" type="button"
-    class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3 sm:px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base w-full sm:w-auto">
-    Cari
-  </button>
-</div>
+        <button id="btnCampaignSearch" type="button"
+          class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3 sm:px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base w-full sm:w-auto">
+          Cari
+        </button>
+      </div>
 
       <div class="overflow-x-auto rounded-lg border border-gray-200">
         <table class="min-w-full text-xs sm:text-sm border-collapse">
@@ -139,8 +140,17 @@
       <div class="flex flex-col md:flex-row justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 items-end">
         <input id="searchDonasi" type="text" placeholder="Cari nama donatur"
           class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition text-sm sm:text-base" />
+
+        <button id="btnBulkDonasi"
+          class="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 sm:px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base whitespace-nowrap w-full md:w-auto text-center">
+          Tambah Bulk
+        </button>
+
+
+
+
         <button id="btnDonasiSearch" type="button"
-          class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3 sm:px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base w-full md:w-auto mt-3 md:mt-0">
+          class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3 sm:px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base w-full md:w-auto mt-1 md:mt-0">
           Cari
         </button>
       </div>
@@ -596,6 +606,78 @@
     loadCampaigns();
     loadDonasi();
   </script>
+
+  <!-- ====================== BULK DONASI MODAL ====================== -->
+  <div id="bulkModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50 p-3">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-[40rem] border-t-4 border-green-600 
+              max-h-[90vh] overflow-y-auto">
+
+      <div class="p-4 sm:p-6">
+
+        <h3 class="text-lg sm:text-xl font-semibold text-green-700 mb-4 text-center">
+          Tambah Donasi Bulk
+        </h3>
+
+        <div class="overflow-x-auto mb-4">
+          <table class="min-w-full border border-gray-300 rounded-lg text-sm">
+            <thead class="bg-green-600 text-white">
+              <tr>
+                <th class="px-2 py-2 border">Nama Donatur</th>
+                <th class="px-2 py-2 border">Nominal</th>
+                <th class="px-2 py-2 border">Campaign ID</th>
+                <th class="px-2 py-2 border">Pesan</th>
+                <th class="px-2 py-2 border whitespace-nowrap w-[70px] text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="bulkTable" class="text-gray-700"></tbody>
+          </table>
+        </div>
+
+        <button id="addBulkRow"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow mb-4 w-full sm:w-auto">
+          + Tambah Baris
+        </button>
+
+        <div class="flex justify-end gap-3 mt-4">
+          <button id="closeBulkModal" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-lg">
+            Batal
+          </button>
+
+          <button id="saveBulkDonasi" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg shadow">
+            Simpan Semua
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ====================== SUCCESS MODAL ====================== -->
+  <div id="successModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-11/12 sm:w-[22rem] mx-4 text-center border-t-4 border-green-600">
+      <h3 class="text-lg sm:text-xl font-semibold text-green-700 mb-3">Berhasil!</h3>
+      <p id="successMessage" class="text-gray-700 mb-5 text-sm sm:text-base"></p>
+      <button onclick="closeSuccessModal()"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow">
+        OK
+      </button>
+    </div>
+  </div>
+
+  <!-- ====================== ERROR MODAL ====================== -->
+  <div id="errorModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-11/12 sm:w-[22rem] mx-4 text-center border-t-4 border-red-600">
+      <h3 class="text-lg sm:text-xl font-semibold text-red-700 mb-3">Gagal!</h3>
+      <p id="errorMessage" class="text-gray-700 mb-5 text-sm sm:text-base"></p>
+      <button onclick="closeErrorModal()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+
 </body>
 
 <style>
@@ -737,6 +819,147 @@
   document.getElementById("adminMenuBtn").addEventListener("click", () => {
     document.getElementById("adminNavMenu").classList.toggle("hidden");
   });
+
+  // ===================== BULK DONASI SCRIPT =====================
+
+   // === Helpers for modal messages ===
+  function openSuccessModal(msg) {
+    document.getElementById("successMessage").innerText = msg;
+    document.getElementById("successModal").classList.remove("hidden");
+  }
+  function closeSuccessModal() {
+    document.getElementById("successModal").classList.add("hidden");
+    location.reload();
+  }
+  function openErrorModal(msg) {
+    document.getElementById("errorMessage").innerText = msg;
+    document.getElementById("errorModal").classList.remove("hidden");
+  }
+  function closeErrorModal() {
+    document.getElementById("errorModal").classList.add("hidden");
+  }
+
+  // Hook close buttons for new modals (if not already in DOM handlers)
+  // make sure these functions are globally available in your file
+  window.closeSuccessModal = closeSuccessModal;
+  window.closeErrorModal = closeErrorModal;
+
+  // ===================== BULK DONASI SCRIPT (clean) =====================
+
+  // DOM refs
+  const btnBulkDonasi = document.getElementById("btnBulkDonasi");
+  const bulkModal = document.getElementById("bulkModal");
+  const bulkTable = document.getElementById("bulkTable");
+  const addBulkRowBtn = document.getElementById("addBulkRow");
+  const closeBulkModalBtn = document.getElementById("closeBulkModal");
+  const saveBulkDonasiBtn = document.getElementById("saveBulkDonasi");
+
+  // Open modal
+  btnBulkDonasi.addEventListener("click", () => {
+    bulkModal.classList.remove("hidden");
+    if (bulkTable.children.length === 0) {
+      bulkTable.insertAdjacentHTML("beforeend", createBulkRow());
+    }
+  });
+
+  // Close modal
+  closeBulkModalBtn.addEventListener("click", () => {
+    bulkModal.classList.add("hidden");
+  });
+
+  // Create row function
+  function createBulkRow() {
+    return `
+      <tr>
+        <td class="border p-1">
+          <input type="text" class="w-full border px-2 py-1 rounded namaInput" placeholder="Nama Donatur" />
+        </td>
+        <td class="border p-1">
+          <input type="number" class="w-full border px-2 py-1 rounded nominalInput" placeholder="Nominal" />
+        </td>
+        <td class="border p-1">
+          <input type="number" class="w-full border px-2 py-1 rounded campaignInput" placeholder="Campaign ID" />
+        </td>
+        <td class="border p-1">
+          <input type="text" class="w-full border px-2 py-1 rounded pesanInput" placeholder="Pesan (opsional)" />
+        </td>
+        <td class="border p-1 text-center">
+          <button type="button" class="removeRow bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">X</button>
+        </td>
+      </tr>`;
+  }
+
+  // Add row
+  addBulkRowBtn.addEventListener("click", () => {
+    bulkTable.insertAdjacentHTML("beforeend", createBulkRow());
+    // scroll last row into view (mobile friendly)
+    bulkTable.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  // Delegate remove row
+  bulkTable.addEventListener("click", (e) => {
+    if (e.target.classList.contains("removeRow")) {
+      const tr = e.target.closest("tr");
+      if (tr) tr.remove();
+    }
+  });
+
+  // Collect entries helper
+  function collectEntries() {
+    const rows = Array.from(bulkTable.querySelectorAll("tr"));
+    const entries = [];
+    for (const row of rows) {
+      const nama = row.querySelector(".namaInput")?.value.trim() || "";
+      const nominal = row.querySelector(".nominalInput")?.value.trim() || "";
+      const campaignId = row.querySelector(".campaignInput")?.value.trim() || "";
+      const pesan = row.querySelector(".pesanInput")?.value.trim() || "";
+
+      if (nama && nominal && campaignId) {
+        entries.push({ nama, nominal: Number(nominal), campaignId: Number(campaignId), pesan });
+      }
+    }
+    return entries;
+  }
+
+  // Save bulk (single listener only)
+  saveBulkDonasiBtn.addEventListener("click", async () => {
+    const entries = collectEntries();
+    if (entries.length === 0) {
+      return openErrorModal("Tidak ada data valid untuk disimpan.");
+    }
+
+    try {
+      const res = await fetch("/api/admin/donasi/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entries)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Bulk insert error:", data);
+        return openErrorModal(data.message || "Terjadi kesalahan saat menyimpan.");
+      }
+
+      bulkModal.classList.add("hidden");
+      openSuccessModal(`Berhasil menyimpan ${data.totalInserted || data.inserted || 0} data donasi.`);
+    } catch (err) {
+      console.error("Network error:", err);
+      openErrorModal("Gagal terhubung ke server.");
+    }
+  });
+
+  // Accessibility: close modals with ESC (optional)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (!bulkModal.classList.contains("hidden")) bulkModal.classList.add("hidden");
+      if (!document.getElementById("errorModal").classList.contains("hidden")) closeErrorModal();
+      if (!document.getElementById("successModal").classList.contains("hidden")) closeSuccessModal();
+    }
+  });
 </script>
 
 </html>
+
+(pastikan udah bener)
