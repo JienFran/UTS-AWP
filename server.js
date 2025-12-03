@@ -36,20 +36,27 @@ const conn = require("./koneksi");
 // ==========================================================
 // 🔥 UNIVERSAL NOTIFICATION TEMPLATE RENDERER
 // ==========================================================
-function renderNotification(res, { title, header, message, button, redirect }) {
+function renderNotification(res, {
+  title,
+  header,
+  message,
+  button,
+  redirect
+}) {
   fs.readFile("notification.html", "utf-8", (err, html) => {
-    if (err) return res.status(500).send("Internal Server Error (Template)");
+    if (err) return res.status(500).send("Error loading notification");
 
     html = html
-      .replace("", title)
-      .replace("", header)
-      .replace("", message)
-      .replace("", button)
-      .replace("", redirect);
+      .replace("<!--TITLE-->", title)
+      .replace("<!--HEADER-->", header)
+      .replace("<!--MESSAGE-->", message)
+      .replace("<!--BUTTON-->", button)
+      .replace("<!--REDIRECT-->", redirect);
 
     res.send(html);
   });
 }
+
 
 
 
@@ -69,16 +76,21 @@ app.get("/", (req, res) => {
 // LOGIN
 // ==========================================================
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
+  const {
+    username,
+    password
+  } = req.body;
 
-  if (!username || !password)
+  if (!username || !password) {
     return renderNotification(res, {
       title: "Login Gagal",
       header: "Login Gagal!",
-      message: "Username atau password tidak boleh kosong.",
+      message: "Username atau password tidak boleh kosong!",
       button: "Coba Lagi",
-      redirect: "/login.html",
+      redirect: "/login.html"
     });
+  }
+
 
   const q = "SELECT * FROM account WHERE Username = ? AND Password = ?";
   conn.query(q, [username, password], (err, results) => {
@@ -97,11 +109,12 @@ app.post("/login", (req, res) => {
     } else {
       return renderNotification(res, {
         title: "Login Gagal",
-        header: "Login Gagal!",
-        message: "Username atau password yang kamu masukkan salah.",
+        header: "Username/Password Salah!",
+        message: "Silakan cek kembali username dan password Anda.",
         button: "Coba Lagi",
-        redirect: "/login.html",
+        redirect: "/login.html"
       });
+
     }
   });
 });
@@ -114,16 +127,18 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
 
+  // Cek field kosong
   if (!username || !password) {
     return renderNotification(res, {
       title: "Register Gagal",
       header: "Form Tidak Lengkap",
-      message: "Semua field wajib diisi.",
-      button: "Kembali",
-      redirect: "/register.html",
+      message: "Semua field wajib diisi!",
+      button: "Coba Lagi",
+      redirect: "/register.html"
     });
   }
 
+  // Validasi password
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
   const isLongEnough = password.length >= 6;
@@ -132,19 +147,23 @@ app.post("/register", (req, res) => {
     return renderNotification(res, {
       title: "Register Gagal",
       header: "Password Tidak Valid",
-      message:
-        "Password harus memiliki minimal 6 karakter, mengandung 1 huruf kapital dan 1 angka.",
+      message: "Password harus minimal 6 karakter, mengandung 1 huruf kapital, dan 1 angka.",
       button: "Kembali",
-      redirect: "/register.html",
+      redirect: "/register.html"
     });
   }
 
+  // Insert ke database
   const q = "INSERT INTO account (Username, Password) VALUES (?, ?)";
+  
   conn.query(q, [username, password], (err) => {
-    if (err) return res.status(500).send("Database Insert Error");
+    if (err) 
+      return res.status(500).send("Database Insert Error");
+    
     res.redirect("/");
   });
 });
+
 
 
 
@@ -170,7 +189,10 @@ app.get("/admin", (req, res) => {
 });
 
 app.post("/admin_login", (req, res) => {
-  const { username, password } = req.body;
+  const {
+    username,
+    password
+  } = req.body;
   const q =
     "SELECT * FROM admin WHERE Username_Admin = ? AND Password_Admin = ?";
 
@@ -233,7 +255,9 @@ app.get("/api/campaigns", (req, res) => {
 
 
 app.get("/api/campaigns/:id", (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
 
   const query = "SELECT * FROM campaigns WHERE id = ?";
 
@@ -242,24 +266,38 @@ app.get("/api/campaigns/:id", (req, res) => {
       console.error("Error fetching single campaign:", err);
       return res
         .status(500)
-        .json({ message: "Gagal mengambil data kampanye." });
+        .json({
+          message: "Gagal mengambil data kampanye."
+        });
     }
 
     if (results.length > 0) {
       res.json(results[0]);
     } else {
-      res.status(404).json({ message: "Kampanye tidak ditemukan." });
+      res.status(404).json({
+        message: "Kampanye tidak ditemukan."
+      });
     }
   });
 });
 
 
 app.put("/api/campaigns/:id", (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
 
-  const { title, target_amount, status, end_date, image_url } = req.body;
+  const {
+    title,
+    target_amount,
+    status,
+    end_date,
+    image_url
+  } = req.body;
   if (!title || !target_amount || !status || !end_date) {
-    return res.status(400).json({ message: "Semua field wajib diisi." });
+    return res.status(400).json({
+      message: "Semua field wajib diisi."
+    });
   }
 
   const query =
@@ -270,29 +308,43 @@ app.put("/api/campaigns/:id", (req, res) => {
   conn.query(query, params, (err, results) => {
     if (err) {
       console.error("Error updating campaign:", err);
-      return res.status(500).json({ message: "Gagal mengupdate kampanye." });
+      return res.status(500).json({
+        message: "Gagal mengupdate kampanye."
+      });
     }
     if (results.affectedRows === 0) {
-      return res.status(404).json({ message: "Kampanye tidak ditemukan." });
+      return res.status(404).json({
+        message: "Kampanye tidak ditemukan."
+      });
     }
-    res.json({ message: "Kampanye berhasil diupdate!" });
+    res.json({
+      message: "Kampanye berhasil diupdate!"
+    });
   });
 });
 
 
 app.delete("/api/campaigns/:id", (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
   const query = "DELETE FROM campaigns WHERE id = ?";
 
   conn.query(query, [id], (err, results) => {
     if (err) {
       console.error("Error deleting campaign:", err);
-      return res.status(500).json({ message: "Gagal menghapus kampanye." });
+      return res.status(500).json({
+        message: "Gagal menghapus kampanye."
+      });
     }
     if (results.affectedRows === 0) {
-      return res.status(404).json({ message: "Kampanye tidak ditemukan." });
+      return res.status(404).json({
+        message: "Kampanye tidak ditemukan."
+      });
     }
-    res.json({ message: "Kampanye berhasil dihapus!" });
+    res.json({
+      message: "Kampanye berhasil dihapus!"
+    });
   });
 });
 
@@ -301,14 +353,18 @@ app.delete("/api/campaigns/:id", (req, res) => {
 // ————————————————————————————————————————
 
 app.delete("/api/admin/donasi/:id", (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
   let donationAmount = 0;
   let campaignId = 0;
 
   conn.beginTransaction((err) => {
     if (err) {
       console.error("Error memulai transaksi:", err);
-      return res.status(500).json({ message: "Kesalahan server." });
+      return res.status(500).json({
+        message: "Kesalahan server."
+      });
     }
 
     const getDonationQuery =
@@ -316,7 +372,9 @@ app.delete("/api/admin/donasi/:id", (req, res) => {
     conn.query(getDonationQuery, [id], (err, results) => {
       if (err || results.length === 0) {
         return conn.rollback(() => {
-          res.status(404).json({ message: "Data donasi tidak ditemukan." });
+          res.status(404).json({
+            message: "Data donasi tidak ditemukan."
+          });
         });
       }
 
@@ -334,7 +392,9 @@ app.delete("/api/admin/donasi/:id", (req, res) => {
               console.error("Error mengupdate kampanye:", err);
               res
                 .status(500)
-                .json({ message: "Gagal mengupdate total donasi kampanye." });
+                .json({
+                  message: "Gagal mengupdate total donasi kampanye."
+                });
             });
           }
 
@@ -345,7 +405,9 @@ app.delete("/api/admin/donasi/:id", (req, res) => {
                 console.error("Error menghapus donasi:", err);
                 res
                   .status(500)
-                  .json({ message: "Gagal menghapus data donasi." });
+                  .json({
+                    message: "Gagal menghapus data donasi."
+                  });
               });
             }
 
@@ -354,12 +416,13 @@ app.delete("/api/admin/donasi/:id", (req, res) => {
                 return conn.rollback(() => {
                   res
                     .status(500)
-                    .json({ message: "Gagal menyelesaikan transaksi." });
+                    .json({
+                      message: "Gagal menyelesaikan transaksi."
+                    });
                 });
               }
               res.json({
-                message:
-                  "Donasi berhasil dihapus dan total kampanye telah diperbarui!",
+                message: "Donasi berhasil dihapus dan total kampanye telah diperbarui!",
               });
             });
           });
@@ -372,9 +435,13 @@ app.delete("/api/admin/donasi/:id", (req, res) => {
 
 app.get("/api/user", (req, res) => {
   if (req.session && req.session.username) {
-    res.status(200).json({ username: req.session.username });
+    res.status(200).json({
+      username: req.session.username
+    });
   } else {
-    res.status(401).json({ message: "User not authenticated" });
+    res.status(401).json({
+      message: "User not authenticated"
+    });
   }
 });
 
@@ -383,14 +450,23 @@ app.post("/api/donate", (req, res) => {
   if (!req.session.userId) {
     return res
       .status(401)
-      .json({ message: "Anda harus login untuk berdonasi." });
+      .json({
+        message: "Anda harus login untuk berdonasi."
+      });
   }
 
-  const { campaignId, nama, nominal, pesan } = req.body;
+  const {
+    campaignId,
+    nama,
+    nominal,
+    pesan
+  } = req.body;
   const userId = req.session.userId;
 
   if (!campaignId || !nama || !nominal) {
-    return res.status(400).json({ message: "Data donasi tidak lengkap." });
+    return res.status(400).json({
+      message: "Data donasi tidak lengkap."
+    });
   }
 
   conn.beginTransaction((err) => {
@@ -398,7 +474,9 @@ app.post("/api/donate", (req, res) => {
       console.error("Error memulai transaksi:", err);
       return res
         .status(500)
-        .json({ message: "Terjadi kesalahan pada server." });
+        .json({
+          message: "Terjadi kesalahan pada server."
+        });
     }
 
     const insertDonationQuery =
@@ -411,7 +489,9 @@ app.post("/api/donate", (req, res) => {
         if (err) {
           console.error("Error menyimpan donasi:", err);
           return conn.rollback(() => {
-            res.status(500).json({ message: "Gagal menyimpan data donasi." });
+            res.status(500).json({
+              message: "Gagal menyimpan data donasi."
+            });
           });
         }
 
@@ -436,7 +516,9 @@ app.post("/api/donate", (req, res) => {
                 return conn.rollback(() => {
                   res
                     .status(500)
-                    .json({ message: "Gagal menyelesaikan transaksi." });
+                    .json({
+                      message: "Gagal menyelesaikan transaksi."
+                    });
                 });
               }
 
@@ -475,9 +557,13 @@ app.get("/api/admin/donasi", (req, res) => {
 app.get("/api/stats/total-donasi", (req, res) => {
   const q = "SELECT SUM(nominal) AS totalDonasi FROM donasi";
   conn.query(q, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) return res.status(500).json({
+      error: err.message
+    });
     const total = results[0].totalDonasi || 0;
-    res.json({ totalDonasi: total });
+    res.json({
+      totalDonasi: total
+    });
   });
 });
 
@@ -485,8 +571,12 @@ app.get("/api/stats/total-donasi", (req, res) => {
 app.get("/api/stats/jumlah-donatur", (req, res) => {
   const q = "SELECT COUNT(DISTINCT user_id) AS jumlahDonatur FROM donasi";
   conn.query(q, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ jumlahDonatur: results[0].jumlahDonatur });
+    if (err) return res.status(500).json({
+      error: err.message
+    });
+    res.json({
+      jumlahDonatur: results[0].jumlahDonatur
+    });
   });
 });
 
@@ -494,19 +584,31 @@ app.get("/api/stats/jumlah-donatur", (req, res) => {
 app.get("/api/stats/total-kampanye", (req, res) => {
   const q = "SELECT COUNT(*) AS totalKampanye FROM campaigns";
   conn.query(q, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ totalKampanye: results[0].totalKampanye });
+    if (err) return res.status(500).json({
+      error: err.message
+    });
+    res.json({
+      totalKampanye: results[0].totalKampanye
+    });
   });
 });
 
 
 app.post("/api/campaigns", (req, res) => {
-  const { title, description, target_amount, end_date, image_url } = req.body;
+  const {
+    title,
+    description,
+    target_amount,
+    end_date,
+    image_url
+  } = req.body;
 
   if (!title || !target_amount || !end_date) {
     return res
       .status(400)
-      .json({ message: "Judul, target, dan tanggal akhir wajib diisi." });
+      .json({
+        message: "Judul, target, dan tanggal akhir wajib diisi."
+      });
   }
 
   const query =
@@ -519,7 +621,9 @@ app.post("/api/campaigns", (req, res) => {
       console.error("Error creating new campaign:", err);
       return res
         .status(500)
-        .json({ message: "Gagal menyimpan kampanye ke database." });
+        .json({
+          message: "Gagal menyimpan kampanye ke database."
+        });
     }
     res.status(201).json({
       message: "Kampanye baru berhasil ditambahkan!",
@@ -533,7 +637,9 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
   const entries = req.body;
 
   if (!Array.isArray(entries) || entries.length === 0) {
-    return res.status(400).json({ message: "Data bulk kosong atau tidak valid." });
+    return res.status(400).json({
+      message: "Data bulk kosong atau tidak valid."
+    });
   }
 
   // === TECHNICAL DECISION: use an existing account ID to satisfy FK constraint
@@ -567,7 +673,10 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
     (err, rows) => {
       if (err) {
         console.error("Error checking campaigns:", err);
-        return res.status(500).json({ message: "Gagal validasi campaign.", error: err });
+        return res.status(500).json({
+          message: "Gagal validasi campaign.",
+          error: err
+        });
       }
 
       const foundIds = rows.map(r => r.id);
@@ -597,7 +706,10 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
       conn.query(sql, [values], (insertErr, result) => {
         if (insertErr) {
           console.error("Error Bulk Insert:", insertErr);
-          return res.status(500).json({ message: "Gagal menyimpan donasi bulk.", error: insertErr });
+          return res.status(500).json({
+            message: "Gagal menyimpan donasi bulk.",
+            error: insertErr
+          });
         }
 
         return res.status(201).json({
