@@ -557,16 +557,16 @@
         data.forEach((d) => {
           tbody.innerHTML += `
           <tr class="hover:bg-gray-50 transition">
-            <td class="border px-4 py-2">${d.id}</td>
-            <td class="border px-4 py-2">${d.nama_donatur}</td>
-            <td class="border px-4 py-2 text-blue-600 font-semibold">Rp ${Number(
+            <td class="border px-4 py-2" data-label="ID">${d.id}</td>
+            <td class="border px-4 py-2" data-label="Nama">${d.nama_donatur}</td>
+            <td class="border px-4 py-2 text-blue-600 font-semibold" data-label="Nominal">Rp ${Number(
               d.nominal
             ).toLocaleString("id-ID")}</td>
-            <td class="border px-4 py-2">${d.pesan || "-"}</td>
-            <td class="border px-4 py-2">${new Date(
+            <td class="border px-4 py-2" data-label="Pesan">${d.pesan || "-"}</td>
+            <td class="border px-4 py-2" data-label="Tanggal">${new Date(
               d.tanggal
             ).toLocaleDateString("id-ID")}</td>
-            <td class="border px-4 py-2 flex gap-2 justify-center">
+            <td class="border px-4 py-2 flex gap-2 justify-center" data-label="Aksi">
               <button onclick="openConfirm('Yakin ingin menghapus donasi ini?', () => deleteDonasi(${
                 d.id
               }))" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Hapus</button>
@@ -704,6 +704,118 @@
   <style>
     html {
       scroll-behavior: smooth;
+    }
+
+    table.min-w-full, table.min-w-full th, table.min-w-full td {
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .flex.gap-2.justify-center, .flex.gap-3.justify-center {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    #editModal > div, #createModal > div, #confirmModal > div {
+      max-width: 36rem;
+      width: calc(100% - 2rem);
+      margin: 0 1rem;
+    }
+
+    button {
+      white-space: normal;
+    }
+
+    @media (max-width: 640px) {
+      header nav {
+        position: static !important;
+        left: auto !important;
+        transform: none !important;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+
+      header nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      table.min-w-full, .min-w-full {
+        font-size: 12px;
+      }
+
+      .text-2xl {
+        font-size: 1.4rem;
+      }
+
+      #editModal > div, #createModal > div, #confirmModal > div {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .overflow-x-auto {
+        overflow-x: auto; 
+      }
+
+      table.min-w-full thead {
+        display: none; 
+      }
+
+      table.min-w-full, table.min-w-full tbody, table.min-w-full tr, table.min-w-full td {
+        display: block;
+        width: 100%;
+      }
+
+      table.min-w-full tr {
+        margin-bottom: 0.75rem;
+        background: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        padding: 0.5rem;
+        border: 1px solid #e5e7eb;
+      }
+
+      table.min-w-full td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0.6rem;
+        border: none;
+        white-space: normal;
+      }
+
+      table.min-w-full td::before {
+        content: attr(data-label) ": ";
+        font-weight: 600;
+        color: #1e3a8a;
+        margin-right: 0.5rem;
+      }
+      table.min-w-full td[data-label="Aksi"] {
+        justify-content: flex-end;
+      }
+
+      table.min-w-full td[data-label="Nominal"],
+      table.min-w-full td[data-label="Tanggal"] {
+        font-weight: 600;
+        color: #1e3a8a;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+      table.min-w-full, .min-w-full {
+        font-size: 13px;
+      }
+
+      #editModal > div, #createModal > div, #confirmModal > div {
+        max-width: 30rem;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      table.min-w-full {
+        font-size: 14px;
+      }
     }
   </style>
 </html>
