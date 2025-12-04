@@ -32,10 +32,7 @@ app.use(express.static(__dirname));
 
 const conn = require("./koneksi");
 
-
-// ==========================================================
-// 🔥 UNIVERSAL NOTIFICATION TEMPLATE RENDERER
-// ==========================================================
+//======INI BUAT TEMPLATE NOTIFIKASI ERROR======
 function renderNotification(res, {
   title,
   header,
@@ -61,7 +58,7 @@ function renderNotification(res, {
 
 
 // ==========================================================
-// HOME
+// HOME(INDEX)
 // ==========================================================
 app.get("/", (req, res) => {
   fs.readFile("index.html", "utf-8", (err, data) => {
@@ -125,9 +122,12 @@ app.post("/login", (req, res) => {
 // REGISTER
 // ==========================================================
 app.post("/register", (req, res) => {
-  const { username, password } = req.body;
+  const {
+    username,
+    password
+  } = req.body;
 
-  // Cek field kosong
+  //Error Field Kosong
   if (!username || !password) {
     return renderNotification(res, {
       title: "Register Gagal",
@@ -138,7 +138,7 @@ app.post("/register", (req, res) => {
     });
   }
 
-  // Validasi password
+  //Cek password
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
   const isLongEnough = password.length >= 6;
@@ -153,13 +153,13 @@ app.post("/register", (req, res) => {
     });
   }
 
-  // Insert ke database
+  //Masukin DB
   const q = "INSERT INTO account (Username, Password) VALUES (?, ?)";
-  
+
   conn.query(q, [username, password], (err) => {
-    if (err) 
+    if (err)
       return res.status(500).send("Database Insert Error");
-    
+
     res.redirect("/");
   });
 });
@@ -223,12 +223,6 @@ app.post("/admin_login", (req, res) => {
     }
   });
 });
-
-
-
-// ==========================================================
-// API CAMPAIGNS, DONASI, STATS
-// ==========================================================
 
 app.get("/api/campaigns", (req, res) => {
   const search = req.query.search || "";
@@ -348,9 +342,6 @@ app.delete("/api/campaigns/:id", (req, res) => {
   });
 });
 
-
-// (ROUTING DONASI, ADMIN DONASI, STATISTIK)
-// ————————————————————————————————————————
 
 app.delete("/api/admin/donasi/:id", (req, res) => {
   const {
@@ -632,7 +623,6 @@ app.post("/api/campaigns", (req, res) => {
   });
 });
 
-// BULK INSERT DONASI (Multiple Rows Save) - safe, validates campaign existence
 app.post("/api/admin/donasi/bulk", (req, res) => {
   const entries = req.body;
 
@@ -642,12 +632,8 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
     });
   }
 
-  // === TECHNICAL DECISION: use an existing account ID to satisfy FK constraint
-  // IMPORTANT: This DOES NOT mean jienfran is admin. This is only a technical filler
-  // until you can add a dedicated system/account user in the DB.
-  const SYSTEM_USER_ACCOUNT_ID = 6; // <-- keep as-is for now (existing account)
+  const SYSTEM_USER_ACCOUNT_ID = 6; //Pake akun sistem
 
-  // Validate shape
   for (const d of entries) {
     if (!d.nama || !d.nominal || !d.campaignId) {
       return res.status(400).json({
@@ -656,7 +642,6 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
     }
   }
 
-  // Normalize values
   const normalized = entries.map(e => ({
     nama: String(e.nama).trim(),
     nominal: Number(e.nominal),
@@ -664,7 +649,6 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
     campaignId: Number(e.campaignId),
   }));
 
-  // 1) Validate that all referenced campaign IDs exist (prevents FK error)
   const campaignIds = Array.from(new Set(normalized.map(x => x.campaignId)));
   const placeholders = campaignIds.map(() => "?").join(",");
   conn.query(
@@ -687,10 +671,9 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
         });
       }
 
-      // 2) Prepare values for bulk insert
       const now = new Date();
       const values = normalized.map(d => [
-        SYSTEM_USER_ACCOUNT_ID, // satisfy FK
+        SYSTEM_USER_ACCOUNT_ID,
         d.nama,
         d.nominal,
         d.pesan,
@@ -721,9 +704,6 @@ app.post("/api/admin/donasi/bulk", (req, res) => {
   );
 });
 
-// ==========================================================
-// SERVER ON
-// ==========================================================
 app.listen(3001, () => {
   console.log("Server running at http://localhost:3001");
 });

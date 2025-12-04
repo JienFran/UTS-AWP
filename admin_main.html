@@ -13,14 +13,12 @@
   <header class="w-full fixed top-0 left-0 bg-blue-700 text-white shadow-md z-50 
   px-4 sm:px-6 md:px-10 py-2 sm:py-4 flex items-center justify-between">
 
-    <!-- LEFT: LOGO -->
     <div class="flex items-center gap-3">
       <img src="logo.png" alt="Logo" class="h-8 sm:h-10 w-auto object-contain">
       <h1 class="text-lg sm:text-xl font-semibold tracking-wide">Admin - Semuabisa.com</h1>
 
     </div>
 
-    <!-- CENTER MENU (DESKTOP) -->
     <nav class="hidden sm:block absolute left-1/2 transform -translate-x-1/2">
       <ul class="flex gap-8 text-white font-medium text-base">
         <li><a href="#stats" class="hover:text-blue-300 transition">Statistik</a></li>
@@ -30,16 +28,13 @@
       </ul>
     </nav>
 
-    <!-- MOBILE MENU BUTTON -->
     <button id="adminMenuBtn" class="sm:hidden text-white text-3xl">☰</button>
 
-    <!-- RIGHT: SIGN OUT (DESKTOP) -->
     <a href="/" class="hidden sm:block bg-red-600 hover:bg-red-700 px-5 py-2 
     rounded-lg font-medium transition shadow">
       Sign Out
     </a>
 
-    <!-- MOBILE MENU DROPDOWN -->
     <div id="adminNavMenu" class="hidden sm:hidden absolute top-full left-0 
     w-full bg-blue-700 p-6 shadow-lg">
       <ul class="flex flex-col gap-4 text-white font-medium text-base">
@@ -607,7 +602,6 @@
     loadDonasi();
   </script>
 
-  <!-- ====================== BULK DONASI MODAL ====================== -->
   <div id="bulkModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50 p-3">
     <div class="bg-white rounded-xl shadow-xl w-full max-w-[40rem] border-t-4 border-green-600 
               max-h-[90vh] overflow-y-auto">
@@ -654,7 +648,6 @@
   </div>
 
 
-  <!-- ====================== SUCCESS MODAL ====================== -->
   <div id="successModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white p-6 rounded-xl shadow-xl w-11/12 sm:w-[22rem] mx-4 text-center border-t-4 border-green-600">
       <h3 class="text-lg sm:text-xl font-semibold text-green-700 mb-3">Berhasil!</h3>
@@ -666,7 +659,6 @@
     </div>
   </div>
 
-  <!-- ====================== ERROR MODAL ====================== -->
   <div id="errorModal" class="fixed inset-0 hidden bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white p-6 rounded-xl shadow-xl w-11/12 sm:w-[22rem] mx-4 text-center border-t-4 border-red-600">
       <h3 class="text-lg sm:text-xl font-semibold text-red-700 mb-3">Gagal!</h3>
@@ -815,14 +807,10 @@
 </style>
 
 <script>
-  // mobile toggle
   document.getElementById("adminMenuBtn").addEventListener("click", () => {
     document.getElementById("adminNavMenu").classList.toggle("hidden");
   });
 
-  // ===================== BULK DONASI SCRIPT =====================
-
-   // === Helpers for modal messages ===
   function openSuccessModal(msg) {
     document.getElementById("successMessage").innerText = msg;
     document.getElementById("successModal").classList.remove("hidden");
@@ -839,14 +827,9 @@
     document.getElementById("errorModal").classList.add("hidden");
   }
 
-  // Hook close buttons for new modals (if not already in DOM handlers)
-  // make sure these functions are globally available in your file
   window.closeSuccessModal = closeSuccessModal;
   window.closeErrorModal = closeErrorModal;
 
-  // ===================== BULK DONASI SCRIPT (clean) =====================
-
-  // DOM refs
   const btnBulkDonasi = document.getElementById("btnBulkDonasi");
   const bulkModal = document.getElementById("bulkModal");
   const bulkTable = document.getElementById("bulkTable");
@@ -854,7 +837,6 @@
   const closeBulkModalBtn = document.getElementById("closeBulkModal");
   const saveBulkDonasiBtn = document.getElementById("saveBulkDonasi");
 
-  // Open modal
   btnBulkDonasi.addEventListener("click", () => {
     bulkModal.classList.remove("hidden");
     if (bulkTable.children.length === 0) {
@@ -862,12 +844,10 @@
     }
   });
 
-  // Close modal
   closeBulkModalBtn.addEventListener("click", () => {
     bulkModal.classList.add("hidden");
   });
 
-  // Create row function
   function createBulkRow() {
     return `
       <tr>
@@ -889,14 +869,11 @@
       </tr>`;
   }
 
-  // Add row
   addBulkRowBtn.addEventListener("click", () => {
     bulkTable.insertAdjacentHTML("beforeend", createBulkRow());
-    // scroll last row into view (mobile friendly)
     bulkTable.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 
-  // Delegate remove row
   bulkTable.addEventListener("click", (e) => {
     if (e.target.classList.contains("removeRow")) {
       const tr = e.target.closest("tr");
@@ -904,7 +881,6 @@
     }
   });
 
-  // Collect entries helper
   function collectEntries() {
     const rows = Array.from(bulkTable.querySelectorAll("tr"));
     const entries = [];
@@ -921,7 +897,6 @@
     return entries;
   }
 
-  // Save bulk (single listener only)
   saveBulkDonasiBtn.addEventListener("click", async () => {
     const entries = collectEntries();
     if (entries.length === 0) {
@@ -950,7 +925,6 @@
     }
   });
 
-  // Accessibility: close modals with ESC (optional)
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       if (!bulkModal.classList.contains("hidden")) bulkModal.classList.add("hidden");
@@ -961,5 +935,3 @@
 </script>
 
 </html>
-
-(pastikan udah bener)

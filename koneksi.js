@@ -1,8 +1,5 @@
 const mysql = require('mysql2');
 
-// ================================
-//  🔴 Koneksi Railway (DISABLED)
-// ================================
 // const conn = mysql.createConnection({
 //   host: "trolley.proxy.rlwy.net",
 //   port: "34469",
@@ -11,13 +8,10 @@ const mysql = require('mysql2');
 //   database: "railway"
 // });
 
-// ================================
-//  🟢 Koneksi Localhost XAMPP MySQL
-// ================================
 const conn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",       // default XAMPP = kosong
+  password: "",
   database: "uts"
 });
 
