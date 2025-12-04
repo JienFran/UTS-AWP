@@ -100,7 +100,7 @@ app.post("/login", (req, res) => {
       fs.readFile("main.html", "utf-8", (err, content) => {
         if (err) return res.status(500).send("Internal Server Error");
 
-        const html = content.replace("", results[0].Username);
+        const html = content.replace("<!--USERNAME-->", results[0].Username);
         res.send(html);
       });
     } else {
