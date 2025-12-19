@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Donasi - Semuabisa.com</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body class="bg-gray-50 font-sans min-h-screen">
+
+  <nav class="bg-blue-700 text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <h1 class="text-xl font-bold tracking-wide">Semuabisa.com</h1>
+      </div>
+      <div class="flex gap-4 items-center">
+        <span id="userNameDisplay" class="hidden sm:block text-blue-200 text-sm font-medium">Loading...</span>
+        <a href="main.html" class="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-lg text-sm font-semibold transition">
+          ← Kembali ke Dashboard
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto mt-10 p-6">
+    
+    <div class="bg-white rounded-xl shadow-lg border-t-4 border-blue-600 p-6 sm:p-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">Riwayat Kebaikan Anda</h2>
+          <p class="text-gray-500 text-sm mt-1">Terima kasih telah menjadi jembatan kebaikan bagi sesama.</p>
+        </div>
+        
+        <button onclick="printPDF()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg shadow-md flex items-center gap-2 font-semibold transition transform hover:scale-105">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2-4h6a2 2 0 002-2V7a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Cetak Laporan PDF
+        </button>
+      </div>
+
+      <div class="overflow-x-auto rounded-lg border border-gray-200">
+        <table class="w-full text-left border-collapse" id="historyTable">
+          <thead class="bg-blue-50 text-blue-800 uppercase text-xs font-bold tracking-wider">
+            <tr>
+              <th class="p-4 border-b">Tanggal</th>
+              <th class="p-4 border-b">Program Donasi</th>
+              <th class="p-4 border-b text-right">Nominal</th>
+              <th class="p-4 border-b">Pesan & Doa</th>
+              <th class="p-4 border-b text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="text-gray-700 text-sm divide-y divide-gray-100">
+            <tr>
+              <td colspan="5" class="p-8 text-center text-gray-500 animate-pulse">Sedang memuat data kebaikan Anda...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="text-center text-gray-500 text-sm py-8 mt-auto">
+    &copy; 2025 Semuabisa.com. All rights reserved.
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const userRes = await fetch("/api/user");
+        if (!userRes.ok) {
+          alert("Silakan login terlebih dahulu.");
+          window.location.href = "login.html";
+          return;
+        }
+        const userData = await userRes.json();
+        document.getElementById("userNameDisplay").textContent = `Halo, ${userData.username}`;
+
+        const res = await fetch("/api/user/history");
+        if (!res.ok) throw new Error("Gagal mengambil data history");
+        const data = await res.json();
+        
+        renderTable(data);
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("tableBody").innerHTML = 
+          `<tr><td colspan="5" class="p-6 text-center text-red-500 font-medium">Gagal memuat data. Silakan refresh halaman.</td></tr>`;
+      }
+    });
+
+    function renderTable(data) {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = 
+          `<tr><td colspan="5" class="p-8 text-center text-gray-500">Belum ada riwayat donasi. <br><a href="main.html#donate" class="text-blue-600 font-bold hover:underline">Mulai Berbagi Sekarang</a></td></tr>`;
+        return;
+      }
+
+      data.forEach(d => {
+        const nominal = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(d.nominal);
+        const date = new Date(d.tanggal).toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        const row = `
+          <tr class="hover:bg-blue-50 transition duration-150">
+            <td class="p-4 whitespace-nowrap text-gray-600">${date} WIB</td>
+            <td class="p-4 font-semibold text-gray-800">${d.campaign_title || '<span class="italic text-gray-400">Kampanye dihapus</span>'}</td>
+            <td class="p-4 text-right font-bold text-green-600">${nominal}</td>
+            <td class="p-4 italic text-gray-500 truncate max-w-xs">"${d.pesan || '-'}"</td>
+            <td class="p-4 text-center">
+              <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold shadow-sm">Berhasil</span>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function printPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const primaryColor = [21, 101, 192];
+      const accentColor = [39, 174, 96];
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(24);
+      doc.setTextColor(...primaryColor);
+      doc.text("Semuabisa.com", 14, 20);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(100);
+      doc.text("Platform Donasi Terpercaya Indonesia", 14, 25);
+      doc.text("Website: www.semuabisa.com | Email: support@semuabisa.com", 14, 30);
+
+      doc.setLineWidth(1);
+      doc.setDrawColor(...primaryColor);
+      doc.line(14, 34, 196, 34);
+
+      const userName = document.getElementById("userNameDisplay").textContent.replace("Halo, ", "") || "User";
+      const now = new Date();
+      const tanggalCetak = now.toLocaleDateString("id-ID", { day: 'numeric', month: 'short', year: 'numeric' });
+      const jamCetak = now.toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' });
+
+      doc.setFontSize(10);
+      doc.setTextColor(0);
+      doc.setFont("helvetica", "bold");
+      doc.text("LAPORAN RIWAYAT DONASI", 14, 45);
+      
+      const rightMargin = 196;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+
+      doc.text("Dicetak Oleh:", rightMargin - 40, 45, { align: 'right' }); 
+      doc.setFont("helvetica", "bold");
+      doc.text(userName, rightMargin, 45, { align: 'right' });
+
+      doc.setFont("helvetica", "normal");
+      doc.text("Waktu Cetak:", rightMargin - 40, 50, { align: 'right' });
+      doc.setFont("helvetica", "bold");
+      doc.text(`${tanggalCetak}, ${jamCetak} WIB`, rightMargin, 50, { align: 'right' });
+
+      let totalDonasi = 0;
+      const rows = [];
+      const tableRowsHTML = document.querySelectorAll("#tableBody tr");
+
+      tableRowsHTML.forEach(tr => {
+        const tds = tr.querySelectorAll("td");
+        if (tds.length > 1) { 
+            const tgl = tds[0].innerText;
+            const judul = tds[1].innerText;
+            const nominalText = tds[2].innerText; 
+            const pesan = tds[3].innerText.replace(/"/g, '');
+            const status = "Berhasil";
+
+            const nominalAngka = parseInt(nominalText.replace(/[^0-9]/g, '')) || 0;
+            totalDonasi += nominalAngka;
+
+            rows.push([tgl, judul, nominalText, pesan, status]);
+        }
+      });
+
+      doc.autoTable({
+        startY: 58,
+        head: [['Waktu Transaksi', 'Program Donasi', 'Nominal', 'Pesan & Doa', 'Status']],
+        body: rows,
+        theme: 'striped',
+        
+        headStyles: { 
+            fillColor: primaryColor, 
+            textColor: 255, 
+            fontStyle: 'bold',
+            halign: 'center',
+            cellPadding: 3
+        },
+        
+        styles: { fontSize: 9, cellPadding: 3, valign: 'middle' },
+        
+        columnStyles: {
+            0: { cellWidth: 35 },
+            1: { cellWidth: 'auto' },
+            2: { cellWidth: 35, halign: 'right', fontStyle: 'bold', textColor: accentColor },
+            3: { cellWidth: 40, fontStyle: 'italic', textColor: 80 },
+            4: { cellWidth: 20, halign: 'center' }
+        },
+
+        foot: [[
+            { 
+                content: 'TOTAL DONASI', 
+                colSpan: 2, 
+                styles: { halign: 'right', fontStyle: 'bold', fontSize: 10 } 
+            },
+            { 
+                content: "Rp " + totalDonasi.toLocaleString("id-ID"), 
+                colSpan: 3, 
+                styles: { halign: 'right', fontStyle: 'bold', fontSize: 10, textColor: accentColor } 
+            }
+        ]],
+        footStyles: {
+            fillColor: [245, 245, 245],
+            textColor: 0,
+            lineColor: primaryColor,
+            lineWidth: 0.1
+        }
+      });
+
+      const finalY = doc.lastAutoTable.finalY + 20;
+
+      if (finalY < 250) {
+          doc.setFontSize(10);
+          doc.setTextColor(0);
+          doc.text("Mengetahui,", 160, finalY);
+          doc.text("Admin Semuabisa,", 160, finalY + 20);
+          doc.line(150, finalY + 21, 195, finalY + 21);
+      }
+
+      const pageCount = doc.internal.getNumberOfPages();
+      for(let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+          doc.setFontSize(8);
+          doc.setTextColor(150);
+          doc.text(`Dicetak otomatis oleh sistem Semuabisa.com`, 14, 290);
+          doc.text(`Halaman ${i} dari ${pageCount}`, 196, 290, { align: 'right' });
+      }
+
+      doc.save(`Riwayat_Donasi_${userName}_${now.getTime()}.pdf`);
+    }
+  </script>
+
+</body>
+</html>

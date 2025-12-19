@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Username` varchar(100) NOT NULL,
-  `Password` varchar(50) NOT NULL,
+  `Password` varchar(255) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -79,7 +79,7 @@ CREATE TABLE `campaigns` (
   `description` text DEFAULT NULL,
   `target_amount` decimal(15,2) NOT NULL,
   `current_amount` decimal(15,2) DEFAULT 0.00,
-  `status` enum('active','completed','cancelled') DEFAULT 'active',
+  `status` enum('pending','active','completed','cancelled') DEFAULT 'active',
   `end_date` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `image_url` varchar(255) DEFAULT NULL,

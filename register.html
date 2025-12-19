@@ -31,7 +31,14 @@
 
       <div>
         <label for="password" class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">Password</label>
-        <input type="password" name="password" id="password" placeholder="Masukkan password"
+        <input type="password" name="password" id="password" placeholder="Masukkan password (min 6 karakter, ada Huruf Besar & Angka)"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          required>
+      </div>
+
+      <div>
+        <label for="confirmPassword" class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">Ulangi Password</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Ketik ulang password"
           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
           required>
       </div>
