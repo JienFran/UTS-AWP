@@ -12,7 +12,7 @@ app.use(express.static(__dirname));
 
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: "http://localhost:3010",
     credentials: true,
   })
 );
@@ -736,6 +736,6 @@ app.get("/api/campaigns-public", (req, res) => {
   });
 });
 
-app.listen(3001, () => {
-  console.log("Server running at http://localhost:3001");
+app.listen(3010, () => {
+  console.log("Server running at http://localhost:3010");
 });
